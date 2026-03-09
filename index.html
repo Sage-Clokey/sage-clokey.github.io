@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sage Clokey — Living Systems Architect</title>
+  <meta name="description" content="Sage Clokey is building a biology-native research platform — because organisms solved the problems machines are still failing at." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────────────── */
+    :root {
+      --bg-deep:        #0d1117;
+      --bg-surface:     #161b22;
+      --bg-elevated:    #1c2333;
+      --accent-gold:    #c9a84c;
+      --accent-teal:    #4ecdc4;
+      --accent-bio:     #2d6a4f;
+      --text-primary:   #e6edf3;
+      --text-muted:     #8b949e;
+      --text-dim:       #484f58;
+      --spiral-glow:    rgba(201, 168, 76, 0.15);
+
+      --font-display:   'Cormorant Garamond', Georgia, serif;
+      --font-body:      'Inter', system-ui, sans-serif;
+      --font-mono:      'JetBrains Mono', monospace;
+
+      --radius-card:    6px;
+      --radius-btn:     2px;
+
+      --transition-fast: 200ms ease;
+      --transition-mid:  400ms ease;
+      --transition-slow: 600ms ease-out;
+
+      --section-pad:    120px 24px;
+      --content-max:    1100px;
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; max-width: 100%; }
+
+    /* ─── Utility ───────────────────────────────────────────────── */
+    .container { max-width: var(--content-max); margin: 0 auto; padding: 0 24px; }
+    .section-tag {
+      display: inline-block;
+      font-family: var(--font-body);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-teal);
+      margin-bottom: 20px;
+    }
+    .chip {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 3px;
+      background: rgba(78, 205, 196, 0.12);
+      color: var(--accent-teal);
+      margin-bottom: 12px;
+    }
+    .chip.gold {
+      background: rgba(201, 168, 76, 0.12);
+      color: var(--accent-gold);
+    }
+
+    /* ─── Reveal Animations ─────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity var(--transition-slow), transform var(--transition-slow);
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-left {
+      opacity: 0;
+      transform: translateX(-24px);
+      transition: opacity var(--transition-slow), transform var(--transition-slow);
+    }
+    .reveal-left.is-visible { opacity: 1; transform: translateX(0); }
+
+    /* ─── Navigation ────────────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      background: rgba(13, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--text-dim);
+    }
+    nav .nav-inner {
+      max-width: var(--content-max);
+      margin: 0 auto;
+      padding: 0 24px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 20px;
+      color: var(--accent-gold);
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: color var(--transition-fast);
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 1px;
+      background: var(--accent-gold);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 200ms ease;
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--text-muted);
+      transition: var(--transition-fast);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99;
+      background: var(--bg-deep);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 32px;
+      color: var(--text-primary);
+    }
+    .mobile-menu a:hover { color: var(--accent-gold); }
+
+    /* ─── Hero ──────────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      padding: 100px 24px 60px;
+    }
+    .hero-spiral {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      opacity: 0.10;
+      animation: spin 120s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    .hero-content { position: relative; z-index: 1; }
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent-teal);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 700ms ease-out 200ms forwards;
+    }
+    .hero-title {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-weight: 600;
+      font-size: clamp(44px, 7vw, 80px);
+      line-height: 1.05;
+      color: var(--text-primary);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp 700ms ease-out 350ms forwards;
+    }
+    .hero-title em { color: var(--accent-gold); font-style: normal; }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-muted);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 700ms ease-out 500ms forwards;
+    }
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 700ms ease-out 650ms forwards;
+    }
+    .btn {
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: var(--radius-btn);
+      cursor: pointer;
+      transition: var(--transition-fast);
+      border: none;
+      display: inline-block;
+    }
+    .btn-primary {
+      background: var(--accent-gold);
+      color: var(--bg-deep);
+    }
+    .btn-primary:hover { background: #d4b05a; }
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent-teal);
+      border: 1px solid var(--accent-teal);
+    }
+    .btn-secondary:hover { background: rgba(78,205,196,0.08); }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-dim);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      animation: bounce 2s ease-in-out infinite;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards, bounce 2s ease-in-out 2.2s infinite;
+    }
+    .scroll-indicator svg { width: 18px; height: 18px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50%       { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ─── Section: The Idea ─────────────────────────────────────── */
+    #idea {
+      background: var(--bg-surface);
+      padding: var(--section-pad);
+    }
+    #idea .idea-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+    #idea h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(36px, 4.5vw, 56px);
+      line-height: 1.1;
+      color: var(--accent-gold);
+      margin-bottom: 28px;
+    }
+    #idea p {
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    .pull-quote {
+      border-left: 4px solid var(--accent-bio);
+      padding-left: 28px;
+      margin: 40px 0;
+    }
+    .pull-quote blockquote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(22px, 3vw, 32px);
+      line-height: 1.4;
+      color: var(--accent-gold);
+    }
+    .idea-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--text-dim);
+      border-left: 3px solid var(--accent-teal);
+      border-radius: var(--radius-card);
+      padding: 20px 24px;
+      margin-top: 32px;
+      transition: box-shadow var(--transition-fast);
+    }
+    .idea-card:hover { box-shadow: 0 4px 24px var(--spiral-glow); }
+    .idea-card .card-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .idea-card .card-title {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .idea-card a {
+      font-size: 13px;
+      color: var(--accent-teal);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color var(--transition-fast);
+    }
+    .idea-card a:hover { color: var(--accent-gold); }
+
+    /* ─── Section: The Science ──────────────────────────────────── */
+    #science {
+      background: var(--bg-deep);
+      padding: var(--section-pad);
+    }
+    #science h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    #science .intro {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 680px;
+      line-height: 1.8;
+      margin-bottom: 60px;
+    }
+    .science-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .science-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--text-dim);
+      border-radius: var(--radius-card);
+      padding: 28px;
+      transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .science-card:hover {
+      border-color: var(--accent-teal);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .science-card h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .science-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .card-links {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+    }
+    .card-links a {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-dim);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: color var(--transition-fast);
+    }
+    .card-links a:hover { color: var(--accent-teal); }
+    .card-links a.live { color: var(--accent-teal); }
+    .card-links a.live:hover { color: var(--accent-gold); }
+
+    /* ─── Section: The Build ────────────────────────────────────── */
+    #build {
+      background: var(--bg-surface);
+      padding: var(--section-pad);
+    }
+    #build h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.1;
+      color: var(--accent-gold);
+      margin-bottom: 16px;
+    }
+    #build .intro {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 680px;
+      line-height: 1.8;
+      margin-bottom: 60px;
+    }
+    .build-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+    }
+    .build-col-header {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-teal);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--text-dim);
+    }
+    .build-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--text-dim);
+      border-radius: var(--radius-card);
+      padding: 22px;
+      margin-bottom: 16px;
+      transition: border-color var(--transition-fast), transform var(--transition-fast);
+    }
+    .build-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-3px);
+    }
+    .build-card h3 {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .build-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 14px;
+    }
+
+    /* ─── Section: The Vision ───────────────────────────────────── */
+    #vision {
+      background: var(--bg-deep);
+      padding: var(--section-pad);
+      position: relative;
+      overflow: hidden;
+    }
+    .vision-bg-spiral {
+      position: absolute;
+      top: 50%; right: -100px;
+      transform: translateY(-50%);
+      width: 700px;
+      height: 700px;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+    #vision .vision-inner { position: relative; z-index: 1; }
+    #vision h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(44px, 6vw, 72px);
+      line-height: 1.0;
+      color: var(--accent-gold);
+      margin-bottom: 8px;
+    }
+    #vision .vision-subtitle {
+      font-size: 22px;
+      color: var(--accent-teal);
+      margin-bottom: 40px;
+    }
+    #vision p {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      max-width: 720px;
+      margin-bottom: 20px;
+    }
+    .sbir-callout {
+      background: var(--bg-elevated);
+      border-left: 4px solid var(--accent-gold);
+      border-radius: 0 var(--radius-card) var(--radius-card) 0;
+      padding: 32px 36px;
+      margin: 48px 0;
+    }
+    .sbir-callout .callout-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-gold);
+      margin-bottom: 10px;
+    }
+    .sbir-callout h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .sbir-callout p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 640px;
+      margin-bottom: 16px;
+    }
+    .sbir-callout a {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      transition: color var(--transition-fast);
+    }
+    .sbir-callout a:hover { color: var(--accent-teal); }
+    .vision-demos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .vision-demo-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--text-dim);
+      border-radius: var(--radius-card);
+      padding: 32px;
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .vision-demo-card:hover {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 32px var(--spiral-glow);
+    }
+    .vision-demo-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+    .vision-demo-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .vision-demo-card a.cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-gold);
+      transition: gap var(--transition-fast), color var(--transition-fast);
+    }
+    .vision-demo-card a.cta-link:hover { gap: 12px; color: var(--accent-teal); }
+
+    /* ─── Section: All Projects ─────────────────────────────────── */
+    #projects {
+      background: var(--bg-surface);
+      padding: var(--section-pad);
+    }
+    #projects h2 {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(32px, 4vw, 44px);
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    #projects .intro {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+    }
+
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 40px;
+    }
+    .filter-btn {
+      padding: 7px 18px;
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 20px;
+      border: 1px solid var(--text-dim);
+      background: var(--bg-elevated);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    .filter-btn:hover { border-color: var(--accent-teal); color: var(--accent-teal); }
+    .filter-btn.active {
+      background: var(--accent-gold);
+      border-color: var(--accent-gold);
+      color: var(--bg-deep);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .project-card {
+      background: var(--bg-elevated);
+      border: 1px solid var(--text-dim);
+      border-radius: var(--radius-card);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      transition: border-color var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .project-card:hover {
+      border-color: var(--accent-gold);
+      transform: translateY(-4px);
+      box-shadow: 0 0 24px var(--spiral-glow);
+    }
+    .project-card.hidden { display: none; }
+    .project-card h3 {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+    .project-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      flex: 1;
+      margin-bottom: 18px;
+    }
+
+    /* ─── Footer ────────────────────────────────────────────────── */
+    footer {
+      background: var(--bg-deep);
+      border-top: 1px solid var(--text-dim);
+      padding: 64px 24px;
+      text-align: center;
+    }
+    footer .footer-spiral {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 20px;
+      opacity: 0.55;
+    }
+    footer .footer-name {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 22px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    footer .footer-tagline {
+      font-size: 13px;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+    footer .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    footer .footer-links a {
+      font-size: 13px;
+      color: var(--text-muted);
+      transition: color var(--transition-fast);
+    }
+    footer .footer-links a:hover { color: var(--accent-teal); }
+    footer .footer-copy {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── Responsive ────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .science-grid { grid-template-columns: repeat(2, 1fr); }
+      .projects-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      :root { --section-pad: 80px 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      #idea .idea-grid { grid-template-columns: 1fr; gap: 40px; }
+      .build-cols { grid-template-columns: 1fr; }
+      .vision-demos { grid-template-columns: 1fr; }
+      .science-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 480px) {
+      .hero-ctas { flex-direction: column; align-items: center; }
+      .btn { width: 100%; max-width: 280px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ────────────────────────────────────────────── -->
+  <nav>
+    <div class="nav-inner">
+      <a class="nav-logo" href="#hero">Sage Clokey</a>
+      <ul class="nav-links">
+        <li><a href="#idea">The Idea</a></li>
+        <li><a href="#science">The Science</a></li>
+        <li><a href="#build">The Build</a></li>
+        <li><a href="#vision">The Vision</a></li>
+        <li><a href="#projects">All Projects</a></li>
+      </ul>
+      <div class="hamburger" id="hamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#idea" onclick="closeMobile()">The Idea</a>
+    <a href="#science" onclick="closeMobile()">The Science</a>
+    <a href="#build" onclick="closeMobile()">The Build</a>
+    <a href="#vision" onclick="closeMobile()">The Vision</a>
+    <a href="#projects" onclick="closeMobile()">All Projects</a>
+  </div>
+
+  <!-- ── Hero ──────────────────────────────────────────────────── -->
+  <section id="hero">
+    <!-- Fibonacci spiral SVG -->
+    <svg class="hero-spiral" viewBox="0 0 600 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M300,300 Q300,155 445,155 Q590,155 590,300 Q590,490 300,490 Q10,490 10,200 Q10,10 350,10 Q640,10 640,300" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+      <path d="M300,300 Q370,300 370,230 Q370,160 300,160 Q195,160 195,280 Q195,420 340,420 Q510,420 510,280 Q510,100 300,100 Q90,100 90,300 Q90,500 320,500" stroke="#c9a84c" stroke-width="1" fill="none" opacity="0.6"/>
+      <circle cx="300" cy="300" r="3" fill="#c9a84c" opacity="0.5"/>
+    </svg>
+
+    <div class="hero-content">
+      <p class="hero-eyebrow">Sage Clokey &mdash; Living Systems Architect</p>
+      <h1 class="hero-title">
+        Living Systems<br/>
+        Are the Architecture<br/>
+        of <em>Everything That Works</em>
+      </h1>
+      <p class="hero-sub">
+        Building a biology-native research platform &mdash;
+        because organisms solved the problems
+        machines are still failing at.
+      </p>
+      <div class="hero-ctas">
+        <a href="#vision" class="btn btn-primary">Explore the Vision</a>
+        <a href="#projects" class="btn btn-secondary">See All Projects</a>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ── The Idea ───────────────────────────────────────────────── -->
+  <section id="idea">
+    <div class="container">
+      <div class="idea-grid">
+        <div>
+          <span class="section-tag reveal">The Philosophy</span>
+          <h2 class="reveal" style="--delay:80ms">
+            Machines Break.<br/>Organisms Adapt.
+          </h2>
+          <div class="pull-quote reveal">
+            <blockquote>
+              "The spiral is not decoration.<br/>
+              It is the universe's preferred<br/>
+              solution to constrained growth."
+            </blockquote>
+          </div>
+          <div class="idea-card reveal">
+            <div class="card-label">Featured</div>
+            <div class="card-title">spiral-steward-website</div>
+            <a href="https://sage-clokey.github.io/spiral-steward-website/" target="_blank" rel="noopener">
+              Read the full manifesto
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        <div>
+          <p class="reveal">
+            Every engineered system we build &mdash; from software to cities to medical devices &mdash;
+            is modeled on the machine: modular, replaceable, optimized for a single static purpose.
+            And every one of them ages poorly. They degrade, they fail at the edges, they cannot heal themselves.
+          </p>
+          <p class="reveal" style="transition-delay:100ms">
+            Living systems do none of this. A coral reef does not have a maintenance team.
+            A developing embryo does not consult a blueprint. They grow, sense, respond, and
+            reorganize according to rules encoded in chemistry and geometry &mdash; rules so elegant
+            they have survived half a billion years of stress-testing. The spiral is their signature:
+            the nautilus, the sunflower, the cochlea, the DNA helix. Form following energy, following time.
+          </p>
+          <p class="reveal" style="transition-delay:200ms">
+            This is not a metaphor. It is a design specification. The question driving all of this work
+            is: what does it actually look like to build that way &mdash; in software, in research platforms,
+            in the tools we use to understand life itself?
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The Science ────────────────────────────────────────────── -->
+  <section id="science">
+    <div class="container">
+      <span class="section-tag reveal">The Research</span>
+      <h2 class="reveal">The Biology Is Not Background.<br/>It Is the Point.</h2>
+      <p class="intro reveal">
+        Before building platforms, the groundwork had to be scientific. These projects are not
+        coursework filler &mdash; each one is a direct interrogation of a biological system that
+        informs the larger architecture. What does genetic drift actually look like in a population?
+        How does an EEG signal betray a degenerating brain? How do organisms generate the shapes
+        they generate? The answers matter to Spiral Steward.
+      </p>
+
+      <div class="science-grid">
+
+        <div class="science-card reveal" style="--delay:0ms">
+          <span class="chip">Simulation / Living Architecture</span>
+          <h3>Living Works by the Word</h3>
+          <p>A morphogenetic simulation environment exploring how form emerges from local rules &mdash;
+          a direct computational model of the living architecture thesis. Biological growth algorithms
+          and generative patterns running in the browser.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/Living-works-by-the-word" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="https://sage-clokey.github.io/Living-works-by-the-word/" target="_blank" rel="noopener" class="live">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Live Site
+            </a>
+          </div>
+        </div>
+
+        <div class="science-card reveal" style="--delay:80ms">
+          <span class="chip">Python / Coral Biology</span>
+          <h3>growthshapes</h3>
+          <p>Python simulations of coral reef and biological growth geometries. Investigates how simple
+          iterative rules produce the fractal complexity visible in reef structures &mdash; a computational
+          biology study in constrained, adaptive form.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/growthshapes" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <div class="science-card reveal" style="--delay:160ms">
+          <span class="chip">Evolutionary Biology</span>
+          <h3>Population Genetics Simulator</h3>
+          <p>An interactive Wright-Fisher model simulator that makes genetic drift visible &mdash;
+          how allele frequencies shift across 10,000 generations under stochastic pressure.
+          Built for coursework, designed to make the invisible tangible.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/discussion_8" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="https://sage-clokey.github.io/discussion_8/PopGen_Simulator.html" target="_blank" rel="noopener" class="live">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Live Simulator
+            </a>
+          </div>
+        </div>
+
+        <div class="science-card reveal" style="--delay:240ms">
+          <span class="chip">Signal Processing / Clinical</span>
+          <h3>EEG Neurodegenerative Analysis</h3>
+          <p>An analysis pipeline for detecting neurodegenerative disease markers in EEG signal data.
+          The nervous system is itself a living network &mdash; its degradation leaves geometric
+          signatures in frequency space.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/eeg-nuerodegenerative-test" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+        <div class="science-card reveal" style="--delay:320ms">
+          <span class="chip">BME Coursework</span>
+          <h3>BME-105 Study Toolkit</h3>
+          <p>Computational tools for biomedical engineering &mdash; auto-generated cheat sheets,
+          a study guide, and a Python script that compiles course material into printable PDFs.
+          The academic foundation beneath the platform.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/BME-105_exam-2" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+            <a href="https://sage-clokey.github.io/BME-105_exam-2/" target="_blank" rel="noopener" class="live">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              Live Site
+            </a>
+          </div>
+        </div>
+
+        <div class="science-card reveal" style="--delay:400ms">
+          <span class="chip">Lab / Genomics</span>
+          <h3>L2 Sanger Sequencing</h3>
+          <p>Documentation and analysis from UCSC BME 110's Sanger sequencing lab &mdash; working
+          directly with real DNA sequence data. The ground floor of bioinformatics: learning to
+          read the molecule that writes living things.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/L2-Sanger-Sequencing-20250403T211637Z-001" target="_blank" rel="noopener">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+              GitHub
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The Build ──────────────────────────────────────────────── -->
+  <section id="build">
+    <div class="container">
+      <span class="section-tag reveal">The Tools</span>
+      <h2 class="reveal">Every Platform Needs<br/>Its Scaffolding.</h2>
+      <p class="intro reveal">
+        The living systems thesis does not exempt itself from needing functional software.
+        These are the tools &mdash; some commercial, some personal, all built to solve a real problem.
+        The same mind building coral reef simulations also shipped Android apps.
+        This is what full-stack looks like when biology is the north star.
+      </p>
+
+      <div class="build-cols">
+        <div>
+          <div class="build-col-header reveal">Generative &amp; AI-Assisted</div>
+
+          <div class="build-card reveal">
+            <span class="chip">React / Python / Generative Biology</span>
+            <h3>claude-code</h3>
+            <p>AI-assisted tooling for generative biology workflows &mdash; React front-end paired
+            with Python back-end, using Claude as a collaborator in building biological simulation
+            and analysis tools. The meta-project: using AI to build the platform that studies life.</p>
+            <div class="card-links">
+              <a href="https://github.com/Sage-Clokey/claude-Code" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+
+          <div class="build-card reveal">
+            <span class="chip">Philosophy / Web</span>
+            <h3>spiral-steward-website</h3>
+            <p>The public-facing manifesto and philosophy site for the Spiral Steward platform.
+            Where the ideas live before they become infrastructure.</p>
+            <div class="card-links">
+              <a href="https://github.com/Sage-Clokey/spiral-steward-website" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+              </a>
+              <a href="https://sage-clokey.github.io/spiral-steward-website/" target="_blank" rel="noopener" class="live">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                Live Site
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="build-col-header reveal">Productivity &amp; Infrastructure</div>
+
+          <div class="build-card reveal">
+            <span class="chip">Professional Intelligence</span>
+            <h3>NetworkOS</h3>
+            <p>A personal networking intelligence system for managing contacts from conferences
+            and events &mdash; contact capture, searchable dashboard, follow-up reminders,
+            and network visualization via FastAPI and a modern frontend.</p>
+            <div class="card-links">
+              <a href="https://github.com/Sage-Clokey/NetworkOS" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+
+          <div class="build-card reveal">
+            <span class="chip">Android / Kotlin</span>
+            <h3>MemberCallApp &mdash; four iterations</h3>
+            <p>Four versions of an Android member call management app, from initial prototype
+            through a full Star Command architecture rebuild. A complete lifecycle of a shipped
+            mobile product. The discipline of iteration.</p>
+            <div class="card-links">
+              <a href="https://github.com/Sage-Clokey/MemberCallAppProject_Complete" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub (Complete)
+              </a>
+            </div>
+          </div>
+
+          <div class="build-card reveal">
+            <span class="chip">Python / Desktop</span>
+            <h3>GoogleSheetRowViewer</h3>
+            <p>A Python desktop app that provides a GUI for viewing and navigating Google Sheets
+            data locally via the Sheets API and tkinter. Lightweight data tooling built for
+            real operational use.</p>
+            <div class="card-links">
+              <a href="https://github.com/Sage-Clokey/GoogleSheetRowViewer" target="_blank" rel="noopener">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── The Vision ─────────────────────────────────────────────── -->
+  <section id="vision">
+    <svg class="vision-bg-spiral" viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M350,350 Q350,180 520,180 Q690,180 690,350 Q690,570 350,570 Q10,570 10,230 Q10,10 400,10 Q740,10 740,350" stroke="#c9a84c" stroke-width="2" fill="none"/>
+      <path d="M350,350 Q430,350 430,270 Q430,185 350,185 Q225,185 225,325 Q225,490 395,490 Q590,490 590,325 Q590,115 350,115 Q105,115 105,350 Q105,580 370,580" stroke="#c9a84c" stroke-width="1.5" fill="none"/>
+    </svg>
+
+    <div class="container vision-inner">
+      <span class="section-tag reveal">The Destination</span>
+      <h2 class="reveal">Spiral Steward</h2>
+      <p class="vision-subtitle reveal">A Living Architecture Research Platform</p>
+
+      <p class="reveal">
+        Spiral Steward is where everything above converges. It is a bioinformatics and living
+        architecture research platform designed around the principle that biological growth patterns
+        &mdash; spirals, branching, reaction-diffusion &mdash; are not just interesting phenomena to
+        simulate, but are the optimal templates for designing adaptive software systems, built
+        environments, and medical diagnostic tools.
+      </p>
+      <p class="reveal" style="transition-delay:100ms">
+        The platform is in active development. The morphogenetic simulations in Living Works by the Word
+        are its proof-of-concept engine. The population genetics simulator demonstrates its analytical layer.
+        The EEG neurodegenerative work points toward its clinical reach. The SBIR grant application is
+        the attempt to give it the institutional runway to become something that matters beyond a single
+        researcher's laptop.
+      </p>
+      <p class="reveal" style="transition-delay:200ms">
+        The name comes from the spiral's role in nature: not as decoration, but as the solution that
+        stewards energy, time, and information into stable, scalable, beautiful form.
+        Spiral Steward is that &mdash; for biological research, for architecture, for the tools
+        we use to understand what it means to be alive.
+      </p>
+
+      <div class="sbir-callout reveal-left">
+        <div class="callout-label">SBIR Phase I &mdash; Grant Application</div>
+        <h3>Institutional Recognition of the Research</h3>
+        <p>The sbir-Spiral-steward repository documents the SBIR (Small Business Innovation Research)
+        grant application to fund Spiral Steward's development &mdash; the formal articulation of the
+        platform's scientific rationale, technical plan, and commercial viability to federal reviewers.
+        Auto-generated using Python from structured research materials.</p>
+        <a href="https://github.com/Sage-Clokey/sbir-Spiral-steward" target="_blank" rel="noopener">
+          View the SBIR application repository &rarr;
+        </a>
+      </div>
+
+      <div class="vision-demos">
+        <div class="vision-demo-card reveal">
+          <span class="chip">Platform Demo</span>
+          <h3>Living Works by the Word</h3>
+          <p>The living proof of concept. Morphogenetic simulation running in the browser &mdash;
+          this is what Spiral Steward's computational core looks like in motion.</p>
+          <a href="https://sage-clokey.github.io/Living-works-by-the-word/" target="_blank" rel="noopener" class="cta-link">
+            See It Running
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+        <div class="vision-demo-card reveal" style="transition-delay:100ms">
+          <span class="chip">Philosophy Site</span>
+          <h3>spiral-steward-website</h3>
+          <p>The ideas behind the platform, written as a manifesto.
+          The why before the how &mdash; where the design specification lives.</p>
+          <a href="https://sage-clokey.github.io/spiral-steward-website/" target="_blank" rel="noopener" class="cta-link">
+            Read the Manifesto
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── All Projects ───────────────────────────────────────────── -->
+  <section id="projects">
+    <div class="container">
+      <span class="section-tag reveal">All Projects</span>
+      <h2 class="reveal">The Complete Archive</h2>
+      <p class="intro reveal">Every repository, in one place. Each one a node in the same network.</p>
+
+      <div class="filter-bar reveal">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="biology">Biology</button>
+        <button class="filter-btn" data-filter="simulation">Simulation</button>
+        <button class="filter-btn" data-filter="tools">Tools</button>
+        <button class="filter-btn" data-filter="android">Android</button>
+        <button class="filter-btn" data-filter="research">Research</button>
+      </div>
+
+      <div class="projects-grid">
+
+        <div class="project-card reveal" data-categories="simulation biology">
+          <span class="chip">Simulation</span>
+          <h3>spiral-steward-website</h3>
+          <p>The public manifesto and philosophy site for the Spiral Steward living architecture platform.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/spiral-steward-website" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://sage-clokey.github.io/spiral-steward-website/" target="_blank" rel="noopener" class="live">Live Site</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="simulation biology" style="transition-delay:60ms">
+          <span class="chip">Simulation</span>
+          <h3>Living-works-by-the-word</h3>
+          <p>Morphogenetic simulation and living architecture platform — form emerging from local biological rules.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/Living-works-by-the-word" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://sage-clokey.github.io/Living-works-by-the-word/" target="_blank" rel="noopener" class="live">Live Site</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="biology simulation" style="transition-delay:120ms">
+          <span class="chip">Biology</span>
+          <h3>growthshapes</h3>
+          <p>Python simulations of coral reef and biological growth geometries — constrained, adaptive form.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/growthshapes" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="research biology" style="transition-delay:180ms">
+          <span class="chip">Research</span>
+          <h3>sbir-Spiral-steward</h3>
+          <p>SBIR Phase I grant application toolkit to fund the Spiral Steward bioinformatics platform.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/sbir-Spiral-steward" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="tools simulation" style="transition-delay:240ms">
+          <span class="chip">Tools</span>
+          <h3>claude-code</h3>
+          <p>AI-assisted generative biology tools — React UI, Python morphogenesis simulation, and generator scripts.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/claude-Code" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="research biology" style="transition-delay:300ms">
+          <span class="chip">Research</span>
+          <h3>eeg-nuerodegenerative-test</h3>
+          <p>EEG signal analysis pipeline for detecting neurodegenerative disease markers in brain data.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/eeg-nuerodegenerative-test" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="simulation biology research" style="transition-delay:360ms">
+          <span class="chip">Simulation</span>
+          <h3>discussion_8 — PopGen Simulator</h3>
+          <p>Wright-Fisher population genetics simulator — visualizing genetic drift and allele frequency dynamics in real time.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/discussion_8" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://sage-clokey.github.io/discussion_8/PopGen_Simulator.html" target="_blank" rel="noopener" class="live">Live Simulator</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="research tools" style="transition-delay:420ms">
+          <span class="chip">Research</span>
+          <h3>BME-105_exam-2</h3>
+          <p>Biomedical engineering coursework toolkit — auto-generated cheat sheets, study guides, and a browser study app.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/BME-105_exam-2" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://sage-clokey.github.io/BME-105_exam-2/" target="_blank" rel="noopener" class="live">Live Site</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="biology research" style="transition-delay:480ms">
+          <span class="chip">Biology</span>
+          <h3>L2-Sanger-Sequencing</h3>
+          <p>DNA Sanger sequencing lab documentation and analysis from UCSC BME 110 — reading the molecule.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/L2-Sanger-Sequencing-20250403T211637Z-001" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="tools" style="transition-delay:540ms">
+          <span class="chip">Tools</span>
+          <h3>NetworkOS</h3>
+          <p>Professional networking intelligence tool — contact capture, event organization, and relationship tracking via FastAPI.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/NetworkOS" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="tools" style="transition-delay:600ms">
+          <span class="chip">Tools</span>
+          <h3>GoogleSheetRowViewer</h3>
+          <p>Python desktop GUI for browsing and viewing Google Sheets data locally via the Sheets API and tkinter.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/GoogleSheetRowViewer" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="android" style="transition-delay:660ms">
+          <span class="chip">Android</span>
+          <h3>MemberCallApp (Complete)</h3>
+          <p>Production-ready Android member call management app with full UI and backend integration.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/MemberCallAppProject_Complete" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="android" style="transition-delay:720ms">
+          <span class="chip">Android</span>
+          <h3>MemberCallApp (Star Command Rebuild)</h3>
+          <p>Refactored MemberCall app implementing the Star Command architecture pattern for a cleaner codebase.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/MemberCallApp_StarCommand_Rebuild" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="tools" style="transition-delay:780ms">
+          <span class="chip">Tools</span>
+          <h3>notesjson</h3>
+          <p>A year of personal notes structured as a JSON knowledge archive — the intellectual substrate beneath the projects.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/notesjson" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+        <div class="project-card reveal" data-categories="tools" style="transition-delay:840ms">
+          <span class="chip">Meta</span>
+          <h3>projects-summary</h3>
+          <p>This portfolio itself — auto-generated PDF archive of all projects, updated via GitHub Actions on every push.</p>
+          <div class="card-links">
+            <a href="https://github.com/Sage-Clokey/projects-summary" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Footer ─────────────────────────────────────────────────── -->
+  <footer>
+    <svg class="footer-spiral" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18,18 Q18,9 27,9 Q36,9 36,18 Q36,29 18,29 Q0,29 0,11 Q0,0 20,0 Q36,0 36,18" stroke="#c9a84c" stroke-width="1.2" fill="none"/>
+    </svg>
+    <p class="footer-name">Sage Clokey</p>
+    <p class="footer-tagline">Building living systems. Steward of spirals.</p>
+    <div class="footer-links">
+      <a href="https://github.com/Sage-Clokey" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://sage-clokey.github.io/spiral-steward-website/" target="_blank" rel="noopener">Spiral Steward</a>
+      <a href="https://github.com/Sage-Clokey/projects-summary" target="_blank" rel="noopener">Projects Archive</a>
+    </div>
+    <p class="footer-copy">All work by Sage Clokey &nbsp;&middot;&nbsp; Roots before branches.</p>
+  </footer>
+
+  <script>
+    // ── Hamburger Menu ────────────────────────────────────────────
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => mobileMenu.classList.toggle('open'));
+    function closeMobile() { mobileMenu.classList.remove('open'); }
+
+    // ── Intersection Observer (reveal animations) ─────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const delay = entry.target.style.getPropertyValue('--delay') || '0ms';
+          entry.target.style.transitionDelay = delay;
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal, .reveal-left').forEach(el => observer.observe(el));
+
+    // ── Project Filter ────────────────────────────────────────────
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        projectCards.forEach(card => {
+          if (filter === 'all' || card.dataset.categories.includes(filter)) {
+            card.classList.remove('hidden');
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
