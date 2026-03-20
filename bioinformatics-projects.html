@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bioinformatics &amp; Technical Projects — Sage Clokey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #16161f;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --accent: #4ecdc4;
+    --accent-hover: #45b7aa;
+    --border: #2a2a35;
+    --code-bg: #1a1a25;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Nav */
+nav {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+nav .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+nav a { color: var(--text-secondary); font-size: 0.9rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+
+/* Repo header */
+.repo-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+.repo-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.repo-header .description { color: var(--text-secondary); margin-bottom: 1rem; }
+.repo-header .links { display: flex; gap: 1rem; }
+.repo-header .links a {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+.repo-header .links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+/* README */
+.readme-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.readme-section h2,
+.readme-section h3,
+.readme-section h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.readme-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section ul, .readme-section ol { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.readme-section pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+.readme-section pre code { background: none; padding: 0; }
+.readme-section table {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.readme-section th, .readme-section td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+.readme-section th { background: var(--bg-secondary); }
+.readme-section hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+/* Code files */
+.code-section {
+    margin-bottom: 2rem;
+}
+.code-file-header {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.code-file-header:hover { background: var(--bg-card); }
+.code-file-header .filename { font-family: monospace; font-weight: 600; }
+.code-file-header .lang-tag {
+    background: var(--accent);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.code-file-header .toggle { color: var(--text-secondary); font-size: 0.85rem; }
+.code-file-body {
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+.code-file-body .highlight {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--code-bg) !important;
+}
+.code-file-body .highlight pre {
+    margin: 0;
+    background: transparent !important;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+.code-file-body.collapsed { display: none; }
+
+/* Notebook output */
+.notebook-section {
+    margin-bottom: 2rem;
+}
+.notebook-section iframe {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    min-height: 600px;
+}
+
+/* Section heading */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Grid page styles */
+.page-header {
+    text-align: center;
+    padding: 3rem 0;
+}
+.page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.page-header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    padding: 1rem 0 3rem;
+}
+.repo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.repo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.repo-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+}
+.repo-card .desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+.repo-card .card-links {
+    display: flex;
+    gap: 0.75rem;
+}
+.repo-card .card-links a {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: border-color 0.2s;
+}
+.repo-card .card-links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .repo-grid { grid-template-columns: 1fr; }
+    nav { flex-wrap: wrap; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+    <nav>
+        <span class="nav-brand">Sage Clokey</span>
+        <a href="index.html">Home</a>
+        <a href="bioinformatics.html">Bioinformatics CV</a>
+        <a href="bioinformatics-projects.html">Projects</a>
+        <a href="all-projects.html">All Repos</a>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>Bioinformatics &amp; Technical Projects</h1>
+            <p>Coursework and tools in computational biology, data science, and systems programming</p>
+        </div>
+
+        <div class="repo-grid">
+            
+        <div class="repo-card">
+            <h3>computational-biology-methods</h3>
+            <p class="desc">Advanced computational biology: gene expression analysis, BED intervals, PCA/MDS, Wright-Fisher simulation, HMM Viterbi inbreeding, breast cancer ML prediction</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/computational-biology-methods" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/computational-biology-methods.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>orf-finder</h3>
+            <p class="desc">6-frame ORF finder for DNA sequences — searches forward and reverse complement strands with configurable codons and minimum length</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/orf-finder" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/orf-finder.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>trna-essential-fragment-finder</h3>
+            <p class="desc">Finds minimal essential unique fragments of tRNA sequences using power-set approach — for probe/primer design</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/trna-essential-fragment-finder" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/trna-essential-fragment-finder.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>scientific-data-visualization</h3>
+            <p class="desc">Publication-quality scientific figures in Python/matplotlib: sequence logos, genome browser, expression plots, heatmaps</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/scientific-data-visualization" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/scientific-data-visualization.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>genome-nucleotide-analyzer</h3>
+            <p class="desc">Analyzes nucleotide composition, GC content, and codon usage across genome FASTA files</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/genome-nucleotide-analyzer" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/genome-nucleotide-analyzer.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>protein-isoelectric-point-calculator</h3>
+            <p class="desc">Calculates protein isoelectric point (pI) and net charge from amino acid sequences using pKa values</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/protein-isoelectric-point-calculator" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/protein-isoelectric-point-calculator.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>scrna-seq-computational-genomics</h3>
+            <p class="desc">Graduate-level computational genomics: scRNA-seq analysis, doublet detection, distance metrics, and RNA modeling (BME 230A)</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/scrna-seq-computational-genomics" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/scrna-seq-computational-genomics.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>sanger-sequencing-analysis</h3>
+            <p class="desc">Project: L2-Sanger Sequencing-20250403T211637Z-001</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/sanger-sequencing-analysis" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/sanger-sequencing-analysis.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>genetic-data-ethics</h3>
+            <p class="desc">Biotechnology technical writing: &#x27;Who Owns Your DNA?&#x27; — genetic data ownership, GDPR, bioethics policy, science communication poster</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/genetic-data-ethics" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/genetic-data-ethics.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>applied-econometrics-r</h3>
+            <p class="desc">Applied econometrics in R: OLS, causal inference, LASSO, random forest — 401k savings, NBA salaries, Lagos market pricing, NYC stop-and-frisk</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/applied-econometrics-r" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/applied-econometrics-r.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>c-systems-programming</h3>
+            <p class="desc">C programming assignments: RPN calculator, hex dump, hangman, LCR dice game, hash vs linked list benchmarking, graph pathfinding</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/c-systems-programming" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/c-systems-programming.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>java-data-structures</h3>
+            <p class="desc">Generic ArrayList and self-balancing AVL Tree implementations in Java</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/java-data-structures" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/java-data-structures.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>Living-works-by-the-word</h3>
+            <p class="desc">Project: Living works by the word</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/Living-works-by-the-word" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/Living-works-by-the-word.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>bioinformatics-tools-lab</h3>
+            <p class="desc">Project: BME 110</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/bioinformatics-tools-lab" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/bioinformatics-tools-lab.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        <div class="repo-card">
+            <h3>machine-learning-fundamentals</h3>
+            <p class="desc">No description</p>
+            <div class="card-links">
+                <a href="https://github.com/Sage-Clokey/machine-learning-fundamentals" target="_blank" rel="noopener">GitHub</a>
+                <a href="projects/machine-learning-fundamentals.html">README &amp; Code</a>
+            </div>
+        </div>
+        
+        </div>
+    </div>
+</body>
+</html>

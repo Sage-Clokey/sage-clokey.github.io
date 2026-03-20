@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>protein-isoelectric-point-calculator — Sage Clokey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #16161f;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --accent: #4ecdc4;
+    --accent-hover: #45b7aa;
+    --border: #2a2a35;
+    --code-bg: #1a1a25;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Nav */
+nav {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+nav .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+nav a { color: var(--text-secondary); font-size: 0.9rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+
+/* Repo header */
+.repo-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+.repo-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.repo-header .description { color: var(--text-secondary); margin-bottom: 1rem; }
+.repo-header .links { display: flex; gap: 1rem; }
+.repo-header .links a {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+.repo-header .links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+/* README */
+.readme-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.readme-section h2,
+.readme-section h3,
+.readme-section h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.readme-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section ul, .readme-section ol { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.readme-section pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+.readme-section pre code { background: none; padding: 0; }
+.readme-section table {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.readme-section th, .readme-section td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+.readme-section th { background: var(--bg-secondary); }
+.readme-section hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+/* Code files */
+.code-section {
+    margin-bottom: 2rem;
+}
+.code-file-header {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.code-file-header:hover { background: var(--bg-card); }
+.code-file-header .filename { font-family: monospace; font-weight: 600; }
+.code-file-header .lang-tag {
+    background: var(--accent);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.code-file-header .toggle { color: var(--text-secondary); font-size: 0.85rem; }
+.code-file-body {
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+.code-file-body .highlight {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--code-bg) !important;
+}
+.code-file-body .highlight pre {
+    margin: 0;
+    background: transparent !important;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+.code-file-body.collapsed { display: none; }
+
+/* Notebook output */
+.notebook-section {
+    margin-bottom: 2rem;
+}
+.notebook-section iframe {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    min-height: 600px;
+}
+
+/* Section heading */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Grid page styles */
+.page-header {
+    text-align: center;
+    padding: 3rem 0;
+}
+.page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.page-header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    padding: 1rem 0 3rem;
+}
+.repo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.repo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.repo-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+}
+.repo-card .desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+.repo-card .card-links {
+    display: flex;
+    gap: 0.75rem;
+}
+.repo-card .card-links a {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: border-color 0.2s;
+}
+.repo-card .card-links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .repo-grid { grid-template-columns: 1fr; }
+    nav { flex-wrap: wrap; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+    <nav>
+        <span class="nav-brand">Sage Clokey</span>
+        <a href="../index.html">Home</a>
+        <a href="../bioinformatics.html">Bioinformatics CV</a>
+        <a href="../bioinformatics-projects.html">Projects</a>
+        <a href="../all-projects.html">All Repos</a>
+    </nav>
+
+    <div class="container">
+        <div class="repo-header">
+            <h1>protein-isoelectric-point-calculator</h1>
+            <p class="description">Calculates protein isoelectric point (pI) and net charge from amino acid sequences using pKa values</p>
+            <div class="links">
+                <a href="https://github.com/Sage-Clokey/protein-isoelectric-point-calculator" target="_blank" rel="noopener">View on GitHub</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">README</h2>
+        <div class="readme-section">
+            <h1 id="protein-isoelectric-point-calculator">Protein Isoelectric Point Calculator</h1>
+<p>A Python tool that calculates the isoelectric point (pI) and net charge of proteins from amino acid sequences.</p>
+<h2 id="what-it-does">What It Does</h2>
+<p>The isoelectric point (pI) is the pH at which a protein carries no net electrical charge — critical for protein purification, gel electrophoresis, and understanding protein behavior in solution.</p>
+<p>The calculator:
+- Computes net charge from ionizable residues (D, E, C, Y, H, K, R)
+- Uses experimentally determined pKa values for each residue type
+- Accounts for N- and C-terminal charges
+- Calculates pI by finding the pH where net charge = 0</p>
+<h2 id="usage">Usage</h2>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>pIsoelectricPoint.py
+</code></pre></div>
+
+<p>Or import the class directly:</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">from</span> <span class="nn">ProteinIsoelectricPointCalculator</span> <span class="kn">import</span> <span class="n">ProteinIsoelectricPointCalculator</span>
+
+<span class="n">calc</span> <span class="o">=</span> <span class="n">ProteinIsoelectricPointCalculator</span><span class="p">()</span>
+<span class="n">charge</span> <span class="o">=</span> <span class="n">calc</span><span class="o">.</span><span class="n">calculate_charge</span><span class="p">(</span><span class="s2">&quot;MKTAYIAKQRQISFVKSHFSRQLEERLGLIEVQAPILSRVGDGTQDNLSGAEKAVQVKVKALPDAQFEVVHSLAKWKRQTLGQHDFSAGEGLYTHMKALRPDEDRLSPLHSVYVDQWDWERVMGDGERQFSTLKSTVEAIWAGIKATEAAVSEEFGLAPFLPDQIHFVHSQELLSRYPDLDAKGRERAIAKDLGAVFLVGIGGKLSDGHRHDVRAPDYDDWSTPSELGHAGLNGDILVWNPVLEDAFELSSMGIRVDADTLKHQLALTGDEDRLELEWHQALLRGEMPQTIGGGIGQSRLTMLLLQLPHIGQVQAGVWPAAVRESVPSLL&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Charge: </span><span class="si">{</span><span class="n">charge</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+
+<h2 id="pka-values-used">pKa Values Used</h2>
+<table>
+<thead>
+<tr>
+<th>Residue</th>
+<th>pKa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Asp (D)</td>
+<td>3.90</td>
+</tr>
+<tr>
+<td>Glu (E)</td>
+<td>4.07</td>
+</tr>
+<tr>
+<td>Cys (C)</td>
+<td>8.18</td>
+</tr>
+<tr>
+<td>Tyr (Y)</td>
+<td>10.46</td>
+</tr>
+<tr>
+<td>His (H)</td>
+<td>6.00</td>
+</tr>
+<tr>
+<td>Lys (K)</td>
+<td>10.54</td>
+</tr>
+<tr>
+<td>Arg (R)</td>
+<td>12.48</td>
+</tr>
+</tbody>
+</table>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>ProteinIsoelectricPointCalculator.py</code> — Core calculator class</li>
+<li><code>pIsoelectricPoint.py</code> — Extended pI computation with binary search</li>
+<li><code>sequenceAnalysis.py</code> — <code>ProteinParam</code> class with MW and extinction coefficient calculations</li>
+</ul>
+        </div>
+
+        
+        
+
+        <h2 class="section-title">Source Code</h2>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-0')">
+                <span class="filename">ProteinIsoelectricPointCalculator.py</span>
+                <span>
+                    <span class="lang-tag">Python</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-0" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ProteinIsoelectricPointCalculator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Dictionary of pKa values for the amino acids</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pKa_values</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="mf">3.90</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span> <span class="mf">4.07</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mf">8.18</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="mf">10.46</span><span class="p">,</span>
+            <span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="mf">6.00</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">:</span> <span class="mf">10.54</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="mf">12.48</span>
+        <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">calculate_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="c1"># Initialize total charge</span>
+        <span class="n">total_charge</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Count the occurrence of each amino acid</span>
+        <span class="n">aa_counts</span> <span class="o">=</span> <span class="p">{</span><span class="n">aa</span><span class="p">:</span> <span class="n">sequence</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">aa</span><span class="p">)</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pKa_values</span><span class="o">.</span><span class="n">keys</span><span class="p">()}</span>
+
+        <span class="c1"># Calculate charge contributed by acidic residues</span>
+        <span class="n">total_charge</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">aa_counts</span><span class="p">[</span><span class="n">aa</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">pKa_values</span><span class="p">[</span><span class="n">aa</span><span class="p">]</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">pKa_values</span><span class="p">[</span><span class="n">aa</span><span class="p">]</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="mf">3.90</span><span class="p">))</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Calculate charge contributed by basic residues</span>
+        <span class="n">total_charge</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">aa_counts</span><span class="p">[</span><span class="n">aa</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mf">10.54</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">pKa_values</span><span class="p">[</span><span class="n">aa</span><span class="p">]</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="mf">10.54</span><span class="p">))</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">])</span>
+
+        <span class="c1"># Calculate charge contributed by cysteine residues (taking into account thiol/disulfide equilibrium)</span>
+        <span class="n">total_charge</span> <span class="o">+=</span> <span class="n">aa_counts</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mf">10.54</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">pKa_values</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="mf">8.18</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="c1"># Calculate charge contributed by the terminal amino and carboxyl groups</span>
+        <span class="n">total_charge</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mf">10.54</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mf">3.1</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="mf">10.54</span><span class="p">))</span> <span class="o">-</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="mf">3.9</span> <span class="o">/</span> <span class="p">(</span><span class="mi">10</span> <span class="o">**</span> <span class="bp">self</span><span class="o">.</span><span class="n">pKa_values</span><span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="mf">3.9</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">total_charge</span>
+
+    <span class="k">def</span> <span class="nf">calculate_pI</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">):</span>
+        <span class="n">total_charge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculate_charge</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+        <span class="c1"># Calculate pI</span>
+        <span class="n">pI</span> <span class="o">=</span> <span class="n">total_charge</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sequence</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pI</span>
+
+<span class="c1"># Example usage:</span>
+<span class="n">protein_calculator</span> <span class="o">=</span> <span class="n">ProteinIsoelectricPointCalculator</span><span class="p">()</span>
+<span class="n">protein_sequence</span> <span class="o">=</span> <span class="s2">&quot;DEYHKRCY&quot;</span>
+<span class="n">charge</span> <span class="o">=</span> <span class="n">protein_calculator</span><span class="o">.</span><span class="n">calculate_charge</span><span class="p">(</span><span class="n">protein_sequence</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Net charge of the protein:&quot;</span><span class="p">,</span> <span class="n">charge</span><span class="p">)</span>
+
+<span class="n">pI</span> <span class="o">=</span> <span class="n">protein_calculator</span><span class="o">.</span><span class="n">calculate_pI</span><span class="p">(</span><span class="n">protein_sequence</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Isoelectric point (pI) of the protein:&quot;</span><span class="p">,</span> <span class="n">pI</span><span class="p">)</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-1')">
+                <span class="filename">pIsoelectricPoint.py</span>
+                <span>
+                    <span class="lang-tag">Python</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-1" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">aaparam</span><span class="p">:</span>
+    <span class="n">aa2chargePos</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;K&#39;</span><span class="p">:</span> <span class="mf">10.5</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">:</span> <span class="mf">12.4</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+    <span class="n">aa2chargeNeg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="mf">3.86</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">:</span> <span class="mf">4.25</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mf">8.33</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protein</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protein</span> <span class="o">=</span> <span class="n">protein</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aaComposition</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">calculateAaComposition</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">calculateAaComposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Calculate the amino acid composition and store it in the composition dictionary</span>
+        <span class="n">composition</span> <span class="o">=</span> <span class="p">{</span><span class="n">aa</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein</span><span class="p">}</span>
+
+        <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">aa</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="n">composition</span><span class="p">:</span>
+                <span class="n">composition</span><span class="p">[</span><span class="n">aa</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">composition</span>
+
+    <span class="k">def</span> <span class="nf">charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pH</span><span class="p">):</span>
+        <span class="c1"># Initialize total charge</span>
+        <span class="n">total_charge</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Count the occurrence of each amino acid</span>
+        <span class="n">aa_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">aaComposition</span>
+
+        <span class="c1"># Calculate positive charges</span>
+        <span class="n">total_charge</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">aa_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aa2chargePos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aa2chargePos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">pH</span><span class="p">)))</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aa2chargePos</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="c1"># Calculate negative charges (Note: Reverse calculation for negative amino acids)</span>
+        <span class="n">total_charge</span> <span class="o">-=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">aa_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aa2chargeNeg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">**</span> <span class="p">(</span><span class="n">pH</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">aa2chargeNeg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="mi">0</span><span class="p">))))</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aa2chargeNeg</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">total_charge</span>
+
+    <span class="k">def</span> <span class="nf">pI</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Binary search to find pH at which net charge is closest to zero</span>
+        <span class="k">def</span> <span class="nf">find_pH</span><span class="p">():</span>
+            <span class="n">lower_pH</span><span class="p">,</span> <span class="n">upper_pH</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">14.0</span>
+            <span class="n">precision</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+            <span class="k">while</span> <span class="n">upper_pH</span> <span class="o">-</span> <span class="n">lower_pH</span> <span class="o">&gt;</span> <span class="n">precision</span><span class="p">:</span>
+                <span class="n">mid_pH</span> <span class="o">=</span> <span class="p">(</span><span class="n">lower_pH</span> <span class="o">+</span> <span class="n">upper_pH</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+                <span class="n">charge_at_mid_pH</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">charge</span><span class="p">(</span><span class="n">mid_pH</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">charge_at_mid_pH</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">lower_pH</span> <span class="o">=</span> <span class="n">mid_pH</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">upper_pH</span> <span class="o">=</span> <span class="n">mid_pH</span>
+
+            <span class="k">return</span> <span class="p">(</span><span class="n">lower_pH</span> <span class="o">+</span> <span class="n">upper_pH</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="k">return</span> <span class="n">find_pH</span><span class="p">()</span>
+
+<span class="c1"># Example usage:</span>
+<span class="n">protein_sequence</span> <span class="o">=</span> <span class="s2">&quot;DEYHKRCY&quot;</span>
+<span class="n">param_calculator</span> <span class="o">=</span> <span class="n">aaparam</span><span class="p">(</span><span class="n">protein_sequence</span><span class="p">)</span>
+<span class="n">pI</span> <span class="o">=</span> <span class="n">param_calculator</span><span class="o">.</span><span class="n">pI</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Isoelectric point (pI) of the protein:&quot;</span><span class="p">,</span> <span class="n">pI</span><span class="p">)</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+function toggleCode(id) {
+    var el = document.getElementById(id);
+    var toggle = el.previousElementSibling.querySelector('.toggle');
+    if (el.classList.contains('collapsed')) {
+        el.classList.remove('collapsed');
+        toggle.textContent = '▼ collapse';
+    } else {
+        el.classList.add('collapsed');
+        toggle.textContent = '▶ expand';
+    }
+}
+</script>
+</body>
+</html>

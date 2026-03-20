@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BME-105_exam-2 — Sage Clokey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #16161f;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --accent: #4ecdc4;
+    --accent-hover: #45b7aa;
+    --border: #2a2a35;
+    --code-bg: #1a1a25;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Nav */
+nav {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+nav .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+nav a { color: var(--text-secondary); font-size: 0.9rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+
+/* Repo header */
+.repo-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+.repo-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.repo-header .description { color: var(--text-secondary); margin-bottom: 1rem; }
+.repo-header .links { display: flex; gap: 1rem; }
+.repo-header .links a {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+.repo-header .links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+/* README */
+.readme-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.readme-section h2,
+.readme-section h3,
+.readme-section h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.readme-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section ul, .readme-section ol { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.readme-section pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+.readme-section pre code { background: none; padding: 0; }
+.readme-section table {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.readme-section th, .readme-section td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+.readme-section th { background: var(--bg-secondary); }
+.readme-section hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+/* Code files */
+.code-section {
+    margin-bottom: 2rem;
+}
+.code-file-header {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.code-file-header:hover { background: var(--bg-card); }
+.code-file-header .filename { font-family: monospace; font-weight: 600; }
+.code-file-header .lang-tag {
+    background: var(--accent);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.code-file-header .toggle { color: var(--text-secondary); font-size: 0.85rem; }
+.code-file-body {
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+.code-file-body .highlight {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--code-bg) !important;
+}
+.code-file-body .highlight pre {
+    margin: 0;
+    background: transparent !important;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+.code-file-body.collapsed { display: none; }
+
+/* Notebook output */
+.notebook-section {
+    margin-bottom: 2rem;
+}
+.notebook-section iframe {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    min-height: 600px;
+}
+
+/* Section heading */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Grid page styles */
+.page-header {
+    text-align: center;
+    padding: 3rem 0;
+}
+.page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.page-header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    padding: 1rem 0 3rem;
+}
+.repo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.repo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.repo-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+}
+.repo-card .desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+.repo-card .card-links {
+    display: flex;
+    gap: 0.75rem;
+}
+.repo-card .card-links a {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: border-color 0.2s;
+}
+.repo-card .card-links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .repo-grid { grid-template-columns: 1fr; }
+    nav { flex-wrap: wrap; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+    <nav>
+        <span class="nav-brand">Sage Clokey</span>
+        <a href="../index.html">Home</a>
+        <a href="../bioinformatics.html">Bioinformatics CV</a>
+        <a href="../bioinformatics-projects.html">Projects</a>
+        <a href="../all-projects.html">All Repos</a>
+    </nav>
+
+    <div class="container">
+        <div class="repo-header">
+            <h1>BME-105_exam-2</h1>
+            <p class="description"></p>
+            <div class="links">
+                <a href="https://github.com/Sage-Clokey/BME-105_exam-2" target="_blank" rel="noopener">View on GitHub</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">README</h2>
+        <div class="readme-section">
+            <p>No README found.</p>
+        </div>
+
+        
+        
+
+        <h2 class="section-title">Source Code</h2>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-0')">
+                <span class="filename">index.html</span>
+                <span>
+                    <span class="lang-tag">HTML</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-0" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">&quot;UTF-8&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">meta</span> <span class="na">http-equiv</span><span class="o">=</span><span class="s">&quot;refresh&quot;</span> <span class="na">content</span><span class="o">=</span><span class="s">&quot;0; url=study-app/index.html&quot;</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>BME 105 Exam 2<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nb">window</span><span class="p">.</span><span class="nx">location</span><span class="p">.</span><span class="nx">replace</span><span class="p">(</span><span class="s2">&quot;study-app/index.html&quot;</span><span class="p">);&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-1')">
+                <span class="filename">make_cheatsheet.py</span>
+                <span>
+                    <span class="lang-tag">Python</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-1" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">reportlab.lib.pagesizes</span> <span class="kn">import</span> <span class="n">letter</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.styles</span> <span class="kn">import</span> <span class="n">getSampleStyleSheet</span><span class="p">,</span> <span class="n">ParagraphStyle</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.units</span> <span class="kn">import</span> <span class="n">inch</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib</span> <span class="kn">import</span> <span class="n">colors</span>
+<span class="kn">from</span> <span class="nn">reportlab.platypus</span> <span class="kn">import</span> <span class="n">SimpleDocTemplate</span><span class="p">,</span> <span class="n">Paragraph</span><span class="p">,</span> <span class="n">Spacer</span><span class="p">,</span> <span class="n">HRFlowable</span><span class="p">,</span> <span class="n">Table</span><span class="p">,</span> <span class="n">TableStyle</span>
+<span class="kn">from</span> <span class="nn">reportlab.lib.enums</span> <span class="kn">import</span> <span class="n">TA_LEFT</span><span class="p">,</span> <span class="n">TA_CENTER</span>
+
+<span class="n">doc</span> <span class="o">=</span> <span class="n">SimpleDocTemplate</span><span class="p">(</span>
+    <span class="s2">&quot;/mnt/c/Users/SajcS/Desktop/BME-105_exam-2/BME105_Exam2_CheatSheet.pdf&quot;</span><span class="p">,</span>
+    <span class="n">pagesize</span><span class="o">=</span><span class="n">letter</span><span class="p">,</span>
+    <span class="n">leftMargin</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="n">rightMargin</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span>
+    <span class="n">topMargin</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="n">bottomMargin</span><span class="o">=</span><span class="mf">0.5</span><span class="o">*</span><span class="n">inch</span>
+<span class="p">)</span>
+
+<span class="n">styles</span> <span class="o">=</span> <span class="n">getSampleStyleSheet</span><span class="p">()</span>
+
+<span class="n">title_style</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span> <span class="n">fontName</span><span class="o">=</span><span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">,</span> <span class="n">textColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">),</span>
+    <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">TA_CENTER</span><span class="p">)</span>
+
+<span class="n">h1_style</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;H1&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">fontName</span><span class="o">=</span><span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">,</span> <span class="n">textColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span>
+    <span class="n">backColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">),</span> <span class="n">spaceBefore</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+    <span class="n">leftIndent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">rightIndent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">borderPadding</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">h2_style</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;H2&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mf">8.5</span><span class="p">,</span> <span class="n">fontName</span><span class="o">=</span><span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">,</span> <span class="n">textColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">),</span>
+    <span class="n">spaceBefore</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">body_style</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;Body&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">fontName</span><span class="o">=</span><span class="s1">&#39;Helvetica&#39;</span><span class="p">,</span> <span class="n">leading</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">spaceBefore</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">leftIndent</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="n">bullet_style</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;Bullet&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mf">7.5</span><span class="p">,</span> <span class="n">fontName</span><span class="o">=</span><span class="s1">&#39;Helvetica&#39;</span><span class="p">,</span> <span class="n">leading</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">spaceBefore</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">leftIndent</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">bulletIndent</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+
+<span class="n">formula_style</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;Formula&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">fontName</span><span class="o">=</span><span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">,</span> <span class="n">textColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#8b0000&#39;</span><span class="p">),</span>
+    <span class="n">backColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#fff8f8&#39;</span><span class="p">),</span> <span class="n">spaceBefore</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">leftIndent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">borderPadding</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="n">note_style</span> <span class="o">=</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;Note&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">fontName</span><span class="o">=</span><span class="s1">&#39;Helvetica-Oblique&#39;</span><span class="p">,</span> <span class="n">textColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#555555&#39;</span><span class="p">),</span>
+    <span class="n">leftIndent</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">spaceBefore</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">h1</span><span class="p">(</span><span class="n">text</span><span class="p">):</span> <span class="k">return</span> <span class="n">Paragraph</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&amp;nbsp;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">h1_style</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">h2</span><span class="p">(</span><span class="n">text</span><span class="p">):</span> <span class="k">return</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">h2_style</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="n">text</span><span class="p">):</span> <span class="k">return</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">body_style</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">b</span><span class="p">(</span><span class="n">text</span><span class="p">):</span> <span class="k">return</span> <span class="n">Paragraph</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;• </span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bullet_style</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">formula</span><span class="p">(</span><span class="n">text</span><span class="p">):</span> <span class="k">return</span> <span class="n">Paragraph</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">formula_style</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">note</span><span class="p">(</span><span class="n">text</span><span class="p">):</span> <span class="k">return</span> <span class="n">Paragraph</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;i&gt;</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&lt;/i&gt;&quot;</span><span class="p">,</span> <span class="n">note_style</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">sp</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span> <span class="k">return</span> <span class="n">Spacer</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">hr</span><span class="p">():</span> <span class="k">return</span> <span class="n">HRFlowable</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">,</span> <span class="n">thickness</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#cccccc&#39;</span><span class="p">))</span>
+
+<span class="n">story</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">&quot;BME 105 — Exam 2 Cheat Sheet&quot;</span><span class="p">,</span> <span class="n">title_style</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">&quot;Lectures 13–23 | Winter 2026&quot;</span><span class="p">,</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;sub&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span>
+    <span class="n">fontSize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">TA_CENTER</span><span class="p">,</span> <span class="n">textColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#555555&#39;</span><span class="p">),</span> <span class="n">spaceAfter</span><span class="o">=</span><span class="mi">6</span><span class="p">)))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hr</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 1: CALCULATIONS ──────────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;CALCULATIONS (show your work!)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Hardy-Weinberg Equilibrium (Lec 20)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formula</span><span class="p">(</span><span class="s2">&quot;p + q = 1     |     p² + 2pq + q² = 1&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;p = freq(dominant allele), q = freq(recessive allele)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;p² = AA freq, 2pq = Aa freq, q² = aa freq&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;5 Assumptions&lt;/b&gt; (violation → not in HWE / evolution occurring):&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;Random mating · No mutation · No gene flow · No selection · Infinite pop size (no drift)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Steps: (1) get q from q² (affected), (2) get p = 1−q, (3) calculate 2pq for carriers&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Chi-Squared Test for HWE (Lec 20)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formula</span><span class="p">(</span><span class="s2">&quot;χ² = Σ (Observed − Expected)² / Expected&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;df = # genotype classes − # alleles   (for biallelic: df = 1)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;If χ² &gt; critical value → reject HWE (population IS evolving)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Natural Selection &amp; Fitness (Lec 21)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formula</span><span class="p">(</span><span class="s2">&quot;W = p²·w_AA + 2pq·w_Aa + q²·w_aa   (normalization factor)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formula</span><span class="p">(</span><span class="s2">&quot;freq after selection: p&#39;² = p²·w_AA / W,  2p&#39;q&#39; = 2pq·w_Aa / W, etc.&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Relative fitness: set highest fitness genotype = 1.0, scale others&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Recessive deleterious allele: hidden in heterozygotes → slow removal (exponential decay of q²)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;dN/dS ratio: &gt;1 = positive selection, ~1 = neutral, &lt;1 = purifying/stabilizing selection&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Mutation&lt;/b&gt; = change in DNA sequence; &lt;b&gt;Substitution&lt;/b&gt; = mutation fixed in population&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Genetic Drift &amp; Founder Effect (Lec 20)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Drift = random allele freq change; larger effect in &lt;b&gt;small&lt;/b&gt; populations&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Allele fixation: freq reaches 1.0 (or 0) — lost/fixed by chance&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Founder effect: small group founds new population → reduced diversity, high drift&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 2: EPIGENETICS ───────────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;EPIGENETICS (Lecs 14–15)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Definition&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;Heritable alteration in gene expression &lt;b&gt;NOT&lt;/b&gt; due to mutation in DNA sequence&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Chromatin-Level Regulation&quot;</span><span class="p">))</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Mechanism&#39;</span><span class="p">,</span> <span class="s1">&#39;Effect&#39;</span><span class="p">,</span> <span class="s1">&#39;Key Detail&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;DNA methylation (CpG)&#39;</span><span class="p">,</span> <span class="s1">&#39;Silences gene&#39;</span><span class="p">,</span> <span class="s1">&#39;Methylated C blocks transcription; unmethylated = active&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Histone acetylation&#39;</span><span class="p">,</span> <span class="s1">&#39;Opens chromatin (active)&#39;</span><span class="p">,</span> <span class="s1">&#39;Neutralizes + charge → loosens DNA–histone binding&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Histone methylation&#39;</span><span class="p">,</span> <span class="s1">&#39;Context-dependent&#39;</span><span class="p">,</span> <span class="s1">&#39;H3K4me3 = active; H3K27me3 = repressed&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Nucleosome positioning&#39;</span><span class="p">,</span> <span class="s1">&#39;Blocks/exposes DNA&#39;</span><span class="p">,</span> <span class="s1">&#39;Packed = heterochromatin; open = euchromatin&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">1.8</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">3.2</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Transcriptional Regulation: cis vs. trans&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;cis&lt;/b&gt; (same chromosome/molecule): promoters, enhancers, insulators&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;trans&lt;/b&gt; (diffusible): transcription factors, activators/coactivators, repressors/corepressors&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;TFs can &lt;b&gt;activate OR repress&lt;/b&gt; — depends on context/cofactors&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Activators: recruit coactivators, remodel chromatin to open state&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Repressors: recruit corepressors, compact chromatin&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Non-coding RNAs&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Bind DNA reverse-complements → localize chromatin-modifying proteins&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;RNA-RNA binding important post-transcriptionally (e.g., RNAi)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Sequencing Assays&quot;</span><span class="p">))</span>
+<span class="n">data2</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Assay&#39;</span><span class="p">,</span> <span class="s1">&#39;What it detects&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;ChIP-seq&#39;</span><span class="p">,</span> <span class="s1">&#39;Protein–DNA interactions (TF binding sites, histone marks)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;ATAC-seq&#39;</span><span class="p">,</span> <span class="s1">&#39;Open chromatin regions (accessible DNA)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Hi-C&#39;</span><span class="p">,</span> <span class="s1">&#39;3D chromatin structure / chromosome contacts&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bisulfite-seq&#39;</span><span class="p">,</span> <span class="s1">&#39;DNA methylation: unmethylated C→U; methylated C unchanged&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Nanopore/PacBio&#39;</span><span class="p">,</span> <span class="s1">&#39;Can detect methylation from raw signal (no bisulfite needed)&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t2</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data2</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">5.2</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t2</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t2</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Genomic Imprinting (Lec 15)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Only one parental allele expressed — determined by parent of origin&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;DNA methylation marks inherited through &lt;b&gt;mitosis&lt;/b&gt;, rewritten during &lt;b&gt;meiosis&lt;/b&gt;&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Pedigree clue: trait passes through one sex only (e.g., always maternal)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Parental conflict hypothesis: paternal genes maximize offspring resource use; maternal genes moderate it&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;CpG islands: recruit methylation (at Cs) AND activators; activators block methylation → gene on&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 3: GWAS &amp; QTL ────────────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;GWAS &amp; QTL MAPPING (Lec 16)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">data3</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="s1">&#39;GWAS&#39;</span><span class="p">,</span> <span class="s1">&#39;QTL Mapping&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Population&#39;</span><span class="p">,</span> <span class="s1">&#39;Large natural population&#39;</span><span class="p">,</span> <span class="s1">&#39;Controlled crosses (F2, RIL)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Resolution&#39;</span><span class="p">,</span> <span class="s1">&#39;Coarse (haplotype blocks)&#39;</span><span class="p">,</span> <span class="s1">&#39;Fine-scale (recombinants)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Linkage&#39;</span><span class="p">,</span> <span class="s1">&#39;High LD → associated SNP may not be causal&#39;</span><span class="p">,</span> <span class="s1">&#39;Recombination breaks LD → more precise&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Output&#39;</span><span class="p">,</span> <span class="s1">&#39;Associated SNP / region&#39;</span><span class="p">,</span> <span class="s1">&#39;Quantitative trait locus interval&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t3</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data3</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.2</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.7</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.6</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t3</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#dde0f0&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t3</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Key insight: associated SNP is in a &lt;b&gt;linked haplotype block&lt;/b&gt; with the causal variant — not necessarily causal itself&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Recombination breaks up LD → enables independent testing of alleles vs. phenotypes&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;eQTL: integrate gene expression with GWAS/QTL to identify regulatory variants&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;More genes → more continuous trait → smaller effect per locus&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 4: FORWARD/REVERSE GENETICS ─────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;FORWARD/REVERSE GENETICS &amp; COMPLEMENTATION (Lec 13)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Forward genetics&lt;/b&gt;: start with phenotype → find the gene (e.g., mutagenesis screen)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Reverse genetics&lt;/b&gt;: start with gene → test effect on phenotype (e.g., CRISPR knockout)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Complementation Test&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Cross two homozygous recessive mutants; if offspring are &lt;b&gt;wild-type&lt;/b&gt; → mutations in &lt;b&gt;different&lt;/b&gt; genes&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;If offspring are &lt;b&gt;mutant&lt;/b&gt; → same gene (fail to complement)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Recombination is the limiting factor&lt;/b&gt; for fine-scale mapping — more recombinants = better resolution&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 5: TRANSGENES / RNAi ────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;TRANSGENES, RNAi, REPORTERS (Lec 17)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Delivery Methods&quot;</span><span class="p">))</span>
+<span class="n">data4</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Method&#39;</span><span class="p">,</span> <span class="s1">&#39;What it uses&#39;</span><span class="p">,</span> <span class="s1">&#39;Target&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Transfection / Transformation&#39;</span><span class="p">,</span> <span class="s1">&#39;DNA/RNA or plasmid; chemical/electroporation&#39;</span><span class="p">,</span> <span class="s1">&#39;Cells in culture&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Transduction&#39;</span><span class="p">,</span> <span class="s1">&#39;Viral vector (retrovirus, lentivirus, AAV)&#39;</span><span class="p">,</span> <span class="s1">&#39;Cells or organisms&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Conjugation&#39;</span><span class="p">,</span> <span class="s1">&#39;Direct cell–cell contact (plasmid transfer)&#39;</span><span class="p">,</span> <span class="s1">&#39;Bacteria&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t4</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data4</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">2.0</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.7</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">1.8</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t4</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t4</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Reporter Genes&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Express a detectable product (GFP, luciferase, lacZ) under control of a promoter of interest&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Used to: visualize where/when a gene is expressed; test enhancer/promoter activity&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;RNAi (RNA Interference)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;dsRNA introduced → Dicer cleaves → siRNA → RISC complex → targets complementary mRNA → degradation&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Result: &lt;b&gt;gene knockdown&lt;/b&gt; (reduced expression, not complete knockout)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Traps&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Enhancer trap&lt;/b&gt;: reporter inserted near endogenous enhancer → reports enhancer activity&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Promoter trap&lt;/b&gt;: reporter only expressed if inserted downstream of active promoter&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Gene trap&lt;/b&gt;: reporter contains splice acceptor → spliced into endogenous mRNA → disrupts gene&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 6: CRISPR ───────────────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;CRISPR-Cas9 GENOME EDITING (Lec 19)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Mechanism&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Guide RNA (gRNA) = crRNA (20 nt targeting sequence) + tracrRNA (scaffold)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;crRNA matches target DNA; Cas9 cuts 3 bp upstream of &lt;b&gt;PAM sequence (NGG)&lt;/b&gt;&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;DSB repaired by: &lt;b&gt;NHEJ&lt;/b&gt; (error-prone → knockout) or &lt;b&gt;HDR&lt;/b&gt; (precise edit with template → knockin)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Designing crRNA&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Find 20 nt sequence in gene followed by NGG (PAM) on the non-template strand&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;crRNA is complementary to the target strand (same sequence as non-template strand)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Knockouts vs. Knockins&quot;</span><span class="p">))</span>
+<span class="n">data5</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Goal&#39;</span><span class="p">,</span> <span class="s1">&#39;Method&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Knockout&#39;</span><span class="p">,</span> <span class="s1">&#39;gRNA → NHEJ indels → frameshift → loss of function&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Conditional knockout&#39;</span><span class="p">,</span> <span class="s1">&#39;LoxP sites flank exon; Cre recombinase removes exon in specific tissue/time&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Knockin (CRISPR)&#39;</span><span class="p">,</span> <span class="s1">&#39;gRNA + HDR template containing desired sequence → precise edit&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Knockin (LoxP/Cre)&#39;</span><span class="p">,</span> <span class="s1">&#39;Insert LoxP-flanked selectable marker; Cre removes marker, leaves knockin&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t5</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data5</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.8</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">4.7</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t5</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t5</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Antibiotic selection: cells with integrated transgene survive antibiotic; others die&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Toxin selection (e.g., thymidine kinase + ganciclovir): kills random integrations, selects targeted&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 7: MODEL ORGANISMS ──────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;MODEL ORGANISMS (Lec 18)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Why use them&lt;/b&gt;: validate mechanistic genotype ↔ phenotype hypotheses&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Logistical requirements&lt;/b&gt;: genetically tractable, culturable/breedable, short generation time, many progeny&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Biological requirements&lt;/b&gt;: conserved functions with target organism (e.g., humans)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Benefit&lt;/b&gt;: concentrated community → shared tools, reagents, databases, protocols&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">data6</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Organism&#39;</span><span class="p">,</span> <span class="s1">&#39;Strengths&#39;</span><span class="p">,</span> <span class="s1">&#39;Common Uses&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;S. cerevisiae (yeast)&#39;</span><span class="p">,</span> <span class="s1">&#39;Fast, cheap, easy genetics, homologous recombination&#39;</span><span class="p">,</span> <span class="s1">&#39;Cell biology, gene function, protein interactions&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;C. elegans (worm)&#39;</span><span class="p">,</span> <span class="s1">&#39;Transparent, invariant cell lineage, RNAi works well&#39;</span><span class="p">,</span> <span class="s1">&#39;Development, neuroscience, aging&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;D. melanogaster (fly)&#39;</span><span class="p">,</span> <span class="s1">&#39;Fast generations, powerful genetics, balancer chromosomes&#39;</span><span class="p">,</span> <span class="s1">&#39;Development, behavior, genetics&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;M. musculus (mouse)&#39;</span><span class="p">,</span> <span class="s1">&#39;Mammalian physiology, CRISPR/conditional KO&#39;</span><span class="p">,</span> <span class="s1">&#39;Disease models, immunology&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;A. thaliana (plant)&#39;</span><span class="p">,</span> <span class="s1">&#39;Small genome, self-fertilizing&#39;</span><span class="p">,</span> <span class="s1">&#39;Plant biology, epigenetics&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Zebrafish&#39;</span><span class="p">,</span> <span class="s1">&#39;Transparent embryo, vertebrate, CRISPR-amenable&#39;</span><span class="p">,</span> <span class="s1">&#39;Development, drug screening&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t6</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data6</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.5</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.5</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.5</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t6</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t6</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 8: SELECTION ─────────────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;NATURAL SELECTION (Lec 21)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Types of Selection&quot;</span><span class="p">))</span>
+<span class="n">data7</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Type&#39;</span><span class="p">,</span> <span class="s1">&#39;Effect on allele freq&#39;</span><span class="p">,</span> <span class="s1">&#39;Example&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Positive / Directional&#39;</span><span class="p">,</span> <span class="s1">&#39;Increases beneficial allele&#39;</span><span class="p">,</span> <span class="s1">&#39;Lactase persistence, antibiotic resistance&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Purifying / Stabilizing&#39;</span><span class="p">,</span> <span class="s1">&#39;Removes deleterious alleles&#39;</span><span class="p">,</span> <span class="s1">&#39;Conserved proteins (histones, tubulins)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Balancing&#39;</span><span class="p">,</span> <span class="s1">&#39;Maintains multiple alleles&#39;</span><span class="p">,</span> <span class="s1">&#39;Sickle cell (het advantage), MHC diversity&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Neutral&#39;</span><span class="p">,</span> <span class="s1">&#39;No selection; drift governs freq&#39;</span><span class="p">,</span> <span class="s1">&#39;Synonymous mutations, non-functional regions&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t7</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data7</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.8</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.0</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.7</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t7</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t7</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Selected vs. Neutral Sites&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Selected sites&lt;/b&gt;: functional sequence under selection (coding exons, regulatory regions)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Neutral sites&lt;/b&gt;: synonymous positions, pseudogenes, most intergenic DNA&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;dN/dS (ω): ratio of non-synonymous : synonymous substitution rates&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="s2">&quot;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;ω &gt; 1 = positive selection   |   ω ≈ 1 = neutral   |   ω &lt; 1 = purifying selection&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 9: MICROBIAL SYMBIOSIS ───────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;MICROBIAL SYMBIOSIS (Lec 22)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Endosymbiosis theory&lt;/b&gt;: mitochondria and chloroplasts derived from ancient bacterial endosymbionts&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Evidence: double membrane, own circular DNA, 70S ribosomes, binary fission, similar gene sequences to bacteria&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Bacteria: compact genomes, operons, no introns; Eukaryotes: large genomes, introns, more regulatory DNA&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Holobiont&lt;/b&gt;: host organism + all its associated microbiota (microbiome); hologenome = combined genomes&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;MWAS challenges vs. GWAS&lt;/b&gt;: microbiome varies with environment/diet/time; OTU definition; causality harder; no fixed reference genome&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 10: PHYLOGENETICS ────────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;PHYLOGENETICS (Lec 23)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Tree Terminology&quot;</span><span class="p">))</span>
+<span class="n">data8</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Term&#39;</span><span class="p">,</span> <span class="s1">&#39;Definition&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Root&#39;</span><span class="p">,</span> <span class="s1">&#39;Common ancestor of all taxa in tree&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Node&#39;</span><span class="p">,</span> <span class="s1">&#39;Branching point = common ancestor&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Branch&#39;</span><span class="p">,</span> <span class="s1">&#39;Lineage / evolutionary path between nodes&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Tip / Taxon&#39;</span><span class="p">,</span> <span class="s1">&#39;Terminal unit (species, individual, sequence)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Clade&#39;</span><span class="p">,</span> <span class="s1">&#39;Group of taxa sharing a common ancestor (monophyletic group)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Bootstrap value&#39;</span><span class="p">,</span> <span class="s1">&#39;Confidence in a node (0–100); &gt;70 generally supported&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t8</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data8</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.3</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">5.2</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t8</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t8</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Inference Methods &amp; Key Concepts&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Parsimony&lt;/b&gt;: prefer tree requiring fewest evolutionary changes&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Distance&lt;/b&gt;: cluster by pairwise sequence similarity (e.g., UPGMA, NJ)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Maximum likelihood&lt;/b&gt;: find tree maximizing probability of observing the data given a model&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Only &lt;b&gt;shared, derived characters (synapomorphies)&lt;/b&gt; are informative — they indicate shared ancestry&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Characters: morphology, anatomy, behavior, DNA/protein sequences&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Gene tree ≠ species tree&lt;/b&gt;: incomplete lineage sorting, horizontal transfer, or paralogy can differ&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Molecular clock&lt;/b&gt;: neutral mutations accumulate at constant rate → date divergence events&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Need many loci: substitutions saturate, recombination unlinks histories, selected loci bias results&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;COVID-19: viral mutations tracked transmission chains and outbreak origins phylogenetically&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># ── SECTION 11: EXAM 1 CARRYOVER ────────────────────────────────────</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h1</span><span class="p">(</span><span class="s2">&quot;EXAM 1 CARRYOVER (likely still tested)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Allele Types &amp; Mutations&quot;</span><span class="p">))</span>
+<span class="n">data9</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Allele Type&#39;</span><span class="p">,</span> <span class="s1">&#39;Function&#39;</span><span class="p">,</span> <span class="s1">&#39;Dominance&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Amorphic (null)&#39;</span><span class="p">,</span> <span class="s1">&#39;No function&#39;</span><span class="p">,</span> <span class="s1">&#39;Recessive (usually)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Hypomorphic&#39;</span><span class="p">,</span> <span class="s1">&#39;Reduced function&#39;</span><span class="p">,</span> <span class="s1">&#39;Recessive (usually)&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Hypermorphic&#39;</span><span class="p">,</span> <span class="s1">&#39;Enhanced function&#39;</span><span class="p">,</span> <span class="s1">&#39;Dominant&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Neomorphic&#39;</span><span class="p">,</span> <span class="s1">&#39;New function&#39;</span><span class="p">,</span> <span class="s1">&#39;Dominant&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Antimorphic (dom-neg)&#39;</span><span class="p">,</span> <span class="s1">&#39;Opposes WT&#39;</span><span class="p">,</span> <span class="s1">&#39;Dominant&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t9</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data9</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">1.6</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.2</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.7</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t9</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t9</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Mutation Types (coding sequence)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Silent&lt;/b&gt;: different codon, same amino acid (synonymous)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Missense&lt;/b&gt;: different codon → different amino acid&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Nonsense&lt;/b&gt;: codon → stop codon (UAA, UAG, UGA) → truncated protein&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Frameshift&lt;/b&gt;: indel not divisible by 3 → shifts reading frame downstream&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Loss of function&lt;/b&gt;: nonsense, frameshift, deletion, inversion disrupting gene&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Pleiotropy&lt;/b&gt;: one gene → multiple phenotypes&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Penetrance&lt;/b&gt;: </span><span class="si">% o</span><span class="s2">f individuals with genotype who show phenotype&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;&lt;b&gt;Expressivity&lt;/b&gt;: degree to which phenotype is expressed in those with genotype&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;Gene Interactions (F2 ratios from dihybrid cross)&quot;</span><span class="p">))</span>
+<span class="n">data10</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s1">&#39;Interaction&#39;</span><span class="p">,</span> <span class="s1">&#39;F2 Ratio&#39;</span><span class="p">,</span> <span class="s1">&#39;Clue&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Independent (no interaction)&#39;</span><span class="p">,</span> <span class="s1">&#39;9:3:3:1&#39;</span><span class="p">,</span> <span class="s1">&#39;Four phenotypes&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Dominant epistasis (A over B)&#39;</span><span class="p">,</span> <span class="s1">&#39;12:3:1&#39;</span><span class="p">,</span> <span class="s1">&#39;A dominant masks B&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Recessive epistasis (aa masks)&#39;</span><span class="p">,</span> <span class="s1">&#39;9:3:4&#39;</span><span class="p">,</span> <span class="s1">&#39;aa masks B locus&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Duplicate recessive epistasis&#39;</span><span class="p">,</span> <span class="s1">&#39;9:7&#39;</span><span class="p">,</span> <span class="s1">&#39;Need A AND B dominant for phenotype&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Reciprocal recessive epistasis&#39;</span><span class="p">,</span> <span class="s1">&#39;9:6:1 or 9:3:4&#39;</span><span class="p">,</span> <span class="s1">&#39;Each recessive masks other&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Redundancy (duplicate dominant)&#39;</span><span class="p">,</span> <span class="s1">&#39;15:1&#39;</span><span class="p">,</span> <span class="s1">&#39;Either A or B dominant enough&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Additivity&#39;</span><span class="p">,</span> <span class="s1">&#39;1:2:1 or continuous&#39;</span><span class="p">,</span> <span class="s1">&#39;Additive effect of alleles&#39;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s1">&#39;Complementation (9:7)&#39;</span><span class="p">,</span> <span class="s1">&#39;9:7&#39;</span><span class="p">,</span> <span class="s1">&#39;Both must have dominant allele&#39;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">t10</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">data10</span><span class="p">,</span> <span class="n">colWidths</span><span class="o">=</span><span class="p">[</span><span class="mf">2.3</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">1.3</span><span class="o">*</span><span class="n">inch</span><span class="p">,</span> <span class="mf">2.9</span><span class="o">*</span><span class="n">inch</span><span class="p">])</span>
+<span class="n">t10</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">TableStyle</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;BACKGROUND&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#1a1a5e&#39;</span><span class="p">)),</span>
+    <span class="p">(</span><span class="s1">&#39;TEXTCOLOR&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="s1">&#39;Helvetica-Bold&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTSIZE&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">7</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;FONTNAME&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;Helvetica&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;ROWBACKGROUNDS&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="n">colors</span><span class="o">.</span><span class="n">white</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#f0f0f8&#39;</span><span class="p">)]),</span>
+    <span class="p">(</span><span class="s1">&#39;GRID&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mf">0.3</span><span class="p">,</span> <span class="n">colors</span><span class="o">.</span><span class="n">grey</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;VALIGN&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="s1">&#39;TOP&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;LEFTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;RIGHTPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;TOPPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;BOTTOMPADDING&#39;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="mi">2</span><span class="p">),</span>
+<span class="p">]))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t10</span><span class="p">)</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">())</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h2</span><span class="p">(</span><span class="s2">&quot;X-linked Linkage &amp; Recombination&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Notation for linked alleles: &lt;b&gt;AB;ab&lt;/b&gt; (not AaBb)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Males (XY) are hemizygous for X-linked genes → show X-linked phenotypes with one allele&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">formula</span><span class="p">(</span><span class="s2">&quot;Parental class freq = (1 − RF) / 2 each   |   Recombinant class freq = RF / 2 each&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;RF = recombination frequency (map distance in Morgans/cM)&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">b</span><span class="p">(</span><span class="s2">&quot;Penetrance problem: P(affected) = P(genotype) × penetrance&quot;</span><span class="p">))</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sp</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hr</span><span class="p">())</span>
+<span class="n">story</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Paragraph</span><span class="p">(</span><span class="s2">&quot;Good luck! — BME 105 Winter 2026 Exam 2&quot;</span><span class="p">,</span> <span class="n">ParagraphStyle</span><span class="p">(</span><span class="s1">&#39;footer&#39;</span><span class="p">,</span>
+    <span class="n">parent</span><span class="o">=</span><span class="n">styles</span><span class="p">[</span><span class="s1">&#39;Normal&#39;</span><span class="p">],</span> <span class="n">fontSize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">alignment</span><span class="o">=</span><span class="n">TA_CENTER</span><span class="p">,</span>
+    <span class="n">textColor</span><span class="o">=</span><span class="n">colors</span><span class="o">.</span><span class="n">HexColor</span><span class="p">(</span><span class="s1">&#39;#555555&#39;</span><span class="p">),</span> <span class="n">spaceBefore</span><span class="o">=</span><span class="mi">4</span><span class="p">)))</span>
+
+<span class="n">doc</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">story</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PDF created successfully.&quot;</span><span class="p">)</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+function toggleCode(id) {
+    var el = document.getElementById(id);
+    var toggle = el.previousElementSibling.querySelector('.toggle');
+    if (el.classList.contains('collapsed')) {
+        el.classList.remove('collapsed');
+        toggle.textContent = '▼ collapse';
+    } else {
+        el.classList.add('collapsed');
+        toggle.textContent = '▶ expand';
+    }
+}
+</script>
+</body>
+</html>

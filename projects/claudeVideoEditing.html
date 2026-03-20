@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>claudeVideoEditing — Sage Clokey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #16161f;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --accent: #4ecdc4;
+    --accent-hover: #45b7aa;
+    --border: #2a2a35;
+    --code-bg: #1a1a25;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Nav */
+nav {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+nav .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+nav a { color: var(--text-secondary); font-size: 0.9rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+
+/* Repo header */
+.repo-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+.repo-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.repo-header .description { color: var(--text-secondary); margin-bottom: 1rem; }
+.repo-header .links { display: flex; gap: 1rem; }
+.repo-header .links a {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+.repo-header .links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+/* README */
+.readme-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.readme-section h2,
+.readme-section h3,
+.readme-section h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.readme-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section ul, .readme-section ol { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.readme-section pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+.readme-section pre code { background: none; padding: 0; }
+.readme-section table {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.readme-section th, .readme-section td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+.readme-section th { background: var(--bg-secondary); }
+.readme-section hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+/* Code files */
+.code-section {
+    margin-bottom: 2rem;
+}
+.code-file-header {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.code-file-header:hover { background: var(--bg-card); }
+.code-file-header .filename { font-family: monospace; font-weight: 600; }
+.code-file-header .lang-tag {
+    background: var(--accent);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.code-file-header .toggle { color: var(--text-secondary); font-size: 0.85rem; }
+.code-file-body {
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+.code-file-body .highlight {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--code-bg) !important;
+}
+.code-file-body .highlight pre {
+    margin: 0;
+    background: transparent !important;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+.code-file-body.collapsed { display: none; }
+
+/* Notebook output */
+.notebook-section {
+    margin-bottom: 2rem;
+}
+.notebook-section iframe {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    min-height: 600px;
+}
+
+/* Section heading */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Grid page styles */
+.page-header {
+    text-align: center;
+    padding: 3rem 0;
+}
+.page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.page-header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    padding: 1rem 0 3rem;
+}
+.repo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.repo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.repo-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+}
+.repo-card .desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+.repo-card .card-links {
+    display: flex;
+    gap: 0.75rem;
+}
+.repo-card .card-links a {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: border-color 0.2s;
+}
+.repo-card .card-links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .repo-grid { grid-template-columns: 1fr; }
+    nav { flex-wrap: wrap; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+    <nav>
+        <span class="nav-brand">Sage Clokey</span>
+        <a href="../index.html">Home</a>
+        <a href="../bioinformatics.html">Bioinformatics CV</a>
+        <a href="../bioinformatics-projects.html">Projects</a>
+        <a href="../all-projects.html">All Repos</a>
+    </nav>
+
+    <div class="container">
+        <div class="repo-header">
+            <h1>claudeVideoEditing</h1>
+            <p class="description">Project: claudeVideoEditing</p>
+            <div class="links">
+                <a href="https://github.com/Sage-Clokey/claudeVideoEditing" target="_blank" rel="noopener">View on GitHub</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">README</h2>
+        <div class="readme-section">
+            <h1 id="claude-video-editing">Claude Video Editing</h1>
+<p>Python script for AI-assisted video editing using Claude.</p>
+<h2 id="contents">Contents</h2>
+<ul>
+<li><code>edit.py</code> — Video editing automation script</li>
+</ul>
+<h2 id="purpose">Purpose</h2>
+<p>Automated video editing workflow powered by Claude AI.</p>
+        </div>
+
+        
+        
+
+        <h2 class="section-title">Source Code</h2>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-0')">
+                <span class="filename">edit.py</span>
+                <span>
+                    <span class="lang-tag">Python</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-0" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">TikTok Edit Tool</span>
+<span class="sd">Usage: edit the CLIPS list below, then run: python3 edit.py</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">moviepy</span> <span class="kn">import</span> <span class="n">VideoFileClip</span><span class="p">,</span> <span class="n">concatenate_videoclips</span><span class="p">,</span> <span class="n">TextClip</span><span class="p">,</span> <span class="n">CompositeVideoClip</span><span class="p">,</span> <span class="n">AudioFileClip</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># ─────────────────────────────────────────────</span>
+<span class="c1"># CONFIGURE YOUR EDIT HERE</span>
+<span class="c1"># ─────────────────────────────────────────────</span>
+
+<span class="n">OUTPUT_FILE</span> <span class="o">=</span> <span class="s2">&quot;output.mp4&quot;</span>
+<span class="n">TIKTOK_SIZE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1080</span><span class="p">,</span> <span class="mi">1920</span><span class="p">)</span>  <span class="c1"># vertical 9:16</span>
+
+<span class="c1"># Each clip: (filename, start_seconds, end_seconds)</span>
+<span class="c1"># Example: (&quot;clip1.mp4&quot;, 10, 25) = from 0:10 to 0:25</span>
+<span class="n">CLIPS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;clip1.mp4&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;clip2.mp4&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="c1"># Optional: text overlays per clip — set to None to skip</span>
+<span class="c1"># Each entry: (text, font_size, color, position, start_sec, end_sec)</span>
+<span class="c1"># position can be &quot;center&quot;, &quot;bottom&quot;, &quot;top&quot;, or (x, y)</span>
+<span class="n">TEXT_OVERLAYS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="c1"># (&quot;Fire is life, not just destruction.&quot;, 50, &quot;white&quot;, &quot;bottom&quot;, 0, 5),</span>
+<span class="p">]</span>
+
+<span class="c1"># Optional: background music — set to None to skip</span>
+<span class="n">MUSIC_FILE</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># e.g. &quot;music.mp3&quot;</span>
+<span class="n">MUSIC_VOLUME</span> <span class="o">=</span> <span class="mf">0.3</span>  <span class="c1"># 0.0 to 1.0</span>
+
+<span class="c1"># ─────────────────────────────────────────────</span>
+
+
+<span class="k">def</span> <span class="nf">crop_to_tiktok</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">target_size</span><span class="o">=</span><span class="n">TIKTOK_SIZE</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Center-crop clip to 9:16 vertical format.&quot;&quot;&quot;</span>
+    <span class="n">target_w</span><span class="p">,</span> <span class="n">target_h</span> <span class="o">=</span> <span class="n">target_size</span>
+    <span class="n">target_ratio</span> <span class="o">=</span> <span class="n">target_w</span> <span class="o">/</span> <span class="n">target_h</span>
+
+    <span class="n">orig_w</span><span class="p">,</span> <span class="n">orig_h</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">size</span>
+    <span class="n">orig_ratio</span> <span class="o">=</span> <span class="n">orig_w</span> <span class="o">/</span> <span class="n">orig_h</span>
+
+    <span class="k">if</span> <span class="n">orig_ratio</span> <span class="o">&gt;</span> <span class="n">target_ratio</span><span class="p">:</span>
+        <span class="c1"># too wide — crop sides</span>
+        <span class="n">new_w</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">orig_h</span> <span class="o">*</span> <span class="n">target_ratio</span><span class="p">)</span>
+        <span class="n">x1</span> <span class="o">=</span> <span class="p">(</span><span class="n">orig_w</span> <span class="o">-</span> <span class="n">new_w</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">clip</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">cropped</span><span class="p">(</span><span class="n">x1</span><span class="o">=</span><span class="n">x1</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">new_w</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># too tall — crop top/bottom</span>
+        <span class="n">new_h</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">orig_w</span> <span class="o">/</span> <span class="n">target_ratio</span><span class="p">)</span>
+        <span class="n">y1</span> <span class="o">=</span> <span class="p">(</span><span class="n">orig_h</span> <span class="o">-</span> <span class="n">new_h</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span>
+        <span class="n">clip</span> <span class="o">=</span> <span class="n">clip</span><span class="o">.</span><span class="n">cropped</span><span class="p">(</span><span class="n">y1</span><span class="o">=</span><span class="n">y1</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">new_h</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">clip</span><span class="o">.</span><span class="n">resized</span><span class="p">(</span><span class="n">target_size</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">build_edit</span><span class="p">():</span>
+    <span class="n">processed</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">CLIPS</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[!] File not found: </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> — skipping&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">CLIPS</span><span class="p">)</span><span class="si">}</span><span class="s2">] Loading </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2">s → </span><span class="si">{</span><span class="n">end</span><span class="si">}</span><span class="s2">s)&quot;</span><span class="p">)</span>
+        <span class="n">clip</span> <span class="o">=</span> <span class="n">VideoFileClip</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">subclipped</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="n">clip</span> <span class="o">=</span> <span class="n">crop_to_tiktok</span><span class="p">(</span><span class="n">clip</span><span class="p">)</span>
+
+        <span class="c1"># Apply text overlays that fall within this clip&#39;s time range</span>
+        <span class="c1"># (relative to output timeline — adjust if needed)</span>
+        <span class="n">processed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">clip</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">processed</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[!] No clips loaded. Check your filenames.&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Concatenating clips...&quot;</span><span class="p">)</span>
+    <span class="n">final</span> <span class="o">=</span> <span class="n">concatenate_videoclips</span><span class="p">(</span><span class="n">processed</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">&quot;compose&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Add text overlays</span>
+    <span class="k">if</span> <span class="n">TEXT_OVERLAYS</span><span class="p">:</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[</span><span class="n">final</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">t_start</span><span class="p">,</span> <span class="n">t_end</span> <span class="ow">in</span> <span class="n">TEXT_OVERLAYS</span><span class="p">:</span>
+            <span class="n">txt</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">TextClip</span><span class="p">(</span>
+                    <span class="n">text</span><span class="o">=</span><span class="n">text</span><span class="p">,</span>
+                    <span class="n">font_size</span><span class="o">=</span><span class="n">size</span><span class="p">,</span>
+                    <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+                    <span class="n">font</span><span class="o">=</span><span class="s2">&quot;Arial&quot;</span><span class="p">,</span>
+                    <span class="n">stroke_color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
+                    <span class="n">stroke_width</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                    <span class="n">method</span><span class="o">=</span><span class="s2">&quot;caption&quot;</span><span class="p">,</span>
+                    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">TIKTOK_SIZE</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">80</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="p">)</span>
+                <span class="o">.</span><span class="n">with_start</span><span class="p">(</span><span class="n">t_start</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">with_end</span><span class="p">(</span><span class="n">t_end</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">with_position</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">txt</span><span class="p">)</span>
+        <span class="n">final</span> <span class="o">=</span> <span class="n">CompositeVideoClip</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span>
+
+    <span class="c1"># Add background music</span>
+    <span class="k">if</span> <span class="n">MUSIC_FILE</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">MUSIC_FILE</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Adding music: </span><span class="si">{</span><span class="n">MUSIC_FILE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">music</span> <span class="o">=</span> <span class="n">AudioFileClip</span><span class="p">(</span><span class="n">MUSIC_FILE</span><span class="p">)</span><span class="o">.</span><span class="n">with_volume_scaled</span><span class="p">(</span><span class="n">MUSIC_VOLUME</span><span class="p">)</span>
+        <span class="c1"># Loop or trim music to match video length</span>
+        <span class="k">if</span> <span class="n">music</span><span class="o">.</span><span class="n">duration</span> <span class="o">&lt;</span> <span class="n">final</span><span class="o">.</span><span class="n">duration</span><span class="p">:</span>
+            <span class="n">loops</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">final</span><span class="o">.</span><span class="n">duration</span> <span class="o">/</span> <span class="n">music</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">music</span> <span class="o">=</span> <span class="n">concatenate_audioclips</span><span class="p">([</span><span class="n">music</span><span class="p">]</span> <span class="o">*</span> <span class="n">loops</span><span class="p">)</span>
+        <span class="n">music</span> <span class="o">=</span> <span class="n">music</span><span class="o">.</span><span class="n">subclipped</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">final</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
+        <span class="n">final</span> <span class="o">=</span> <span class="n">final</span><span class="o">.</span><span class="n">with_audio</span><span class="p">(</span><span class="n">music</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Exporting → </span><span class="si">{</span><span class="n">OUTPUT_FILE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">final</span><span class="o">.</span><span class="n">write_videofile</span><span class="p">(</span>
+        <span class="n">OUTPUT_FILE</span><span class="p">,</span>
+        <span class="n">fps</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span>
+        <span class="n">codec</span><span class="o">=</span><span class="s2">&quot;libx264&quot;</span><span class="p">,</span>
+        <span class="n">audio_codec</span><span class="o">=</span><span class="s2">&quot;aac&quot;</span><span class="p">,</span>
+        <span class="n">preset</span><span class="o">=</span><span class="s2">&quot;fast&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Done! File saved: </span><span class="si">{</span><span class="n">OUTPUT_FILE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">build_edit</span><span class="p">()</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+function toggleCode(id) {
+    var el = document.getElementById(id);
+    var toggle = el.previousElementSibling.querySelector('.toggle');
+    if (el.classList.contains('collapsed')) {
+        el.classList.remove('collapsed');
+        toggle.textContent = '▼ collapse';
+    } else {
+        el.classList.add('collapsed');
+        toggle.textContent = '▶ expand';
+    }
+}
+</script>
+</body>
+</html>

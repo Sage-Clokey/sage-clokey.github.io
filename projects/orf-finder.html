@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>orf-finder — Sage Clokey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #16161f;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --accent: #4ecdc4;
+    --accent-hover: #45b7aa;
+    --border: #2a2a35;
+    --code-bg: #1a1a25;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Nav */
+nav {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+nav .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+nav a { color: var(--text-secondary); font-size: 0.9rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+
+/* Repo header */
+.repo-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+.repo-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.repo-header .description { color: var(--text-secondary); margin-bottom: 1rem; }
+.repo-header .links { display: flex; gap: 1rem; }
+.repo-header .links a {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+.repo-header .links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+/* README */
+.readme-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.readme-section h2,
+.readme-section h3,
+.readme-section h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.readme-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section ul, .readme-section ol { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.readme-section pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+.readme-section pre code { background: none; padding: 0; }
+.readme-section table {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.readme-section th, .readme-section td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+.readme-section th { background: var(--bg-secondary); }
+.readme-section hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+/* Code files */
+.code-section {
+    margin-bottom: 2rem;
+}
+.code-file-header {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.code-file-header:hover { background: var(--bg-card); }
+.code-file-header .filename { font-family: monospace; font-weight: 600; }
+.code-file-header .lang-tag {
+    background: var(--accent);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.code-file-header .toggle { color: var(--text-secondary); font-size: 0.85rem; }
+.code-file-body {
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+.code-file-body .highlight {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--code-bg) !important;
+}
+.code-file-body .highlight pre {
+    margin: 0;
+    background: transparent !important;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+.code-file-body.collapsed { display: none; }
+
+/* Notebook output */
+.notebook-section {
+    margin-bottom: 2rem;
+}
+.notebook-section iframe {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    min-height: 600px;
+}
+
+/* Section heading */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Grid page styles */
+.page-header {
+    text-align: center;
+    padding: 3rem 0;
+}
+.page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.page-header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    padding: 1rem 0 3rem;
+}
+.repo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.repo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.repo-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+}
+.repo-card .desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+.repo-card .card-links {
+    display: flex;
+    gap: 0.75rem;
+}
+.repo-card .card-links a {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: border-color 0.2s;
+}
+.repo-card .card-links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .repo-grid { grid-template-columns: 1fr; }
+    nav { flex-wrap: wrap; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+    <nav>
+        <span class="nav-brand">Sage Clokey</span>
+        <a href="../index.html">Home</a>
+        <a href="../bioinformatics.html">Bioinformatics CV</a>
+        <a href="../bioinformatics-projects.html">Projects</a>
+        <a href="../all-projects.html">All Repos</a>
+    </nav>
+
+    <div class="container">
+        <div class="repo-header">
+            <h1>orf-finder</h1>
+            <p class="description">6-frame ORF finder for DNA sequences — searches forward and reverse complement strands with configurable codons and minimum length</p>
+            <div class="links">
+                <a href="https://github.com/Sage-Clokey/orf-finder" target="_blank" rel="noopener">View on GitHub</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">README</h2>
+        <div class="readme-section">
+            <h1 id="orf-finder">ORF Finder</h1>
+<p>A Python tool for finding Open Reading Frames (ORFs) in DNA sequences using all 6 reading frames (3 forward + 3 reverse complement).</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Searches all 6 reading frames simultaneously</li>
+<li>Generates reverse complement strand automatically</li>
+<li>Configurable start codons (default: ATG)</li>
+<li>Configurable stop codons (default: TAG, TAA, TGA)</li>
+<li>Minimum ORF length filter</li>
+<li>Handles dangling ends (ORFs that extend to sequence boundaries)</li>
+<li>Accepts FASTA format input</li>
+<li>Command-line interface with argparse</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<div class="codehilite"><pre><span></span><code>python<span class="w"> </span>mainOrfs.py<span class="w"> </span>--minGene<span class="w"> </span><span class="m">100</span><span class="w"> </span>inputFile.fa
+</code></pre></div>
+
+<h3 id="options">Options</h3>
+<table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--minGene</code></td>
+<td>100</td>
+<td>Minimum ORF length in nucleotides</td>
+</tr>
+<tr>
+<td><code>--start</code></td>
+<td>ATG</td>
+<td>Start codon(s)</td>
+</tr>
+<tr>
+<td><code>--stop</code></td>
+<td>TAG TAA TGA</td>
+<td>Stop codon(s)</td>
+</tr>
+<tr>
+<td><code>--longestGene</code></td>
+<td>False</td>
+<td>Report only the longest ORF per position</td>
+</tr>
+</tbody>
+</table>
+<h2 id="files">Files</h2>
+<ul>
+<li><code>findOrfs.py</code> — <code>OrfFinder</code> class with 6-frame search logic</li>
+<li><code>mainOrfs.py</code> — Entry point, argparse CLI, output formatting</li>
+<li><code>sequenceAnalysis.py</code> — <code>NucParams</code>, <code>ProteinParam</code>, <code>FastAreader</code> helper classes</li>
+<li><code>tass2.fa</code> — Sample FASTA input (chromosome data)</li>
+<li><code>lab5test.fa</code> — Small test FASTA</li>
+</ul>
+<h2 id="output-format">Output Format</h2>
+<div class="codehilite"><pre><span></span><code>+1 start..stop length
+-2 start..stop length
+</code></pre></div>
+
+<p>Frame sign indicates strand (+/-), number indicates reading frame offset.</p>
+        </div>
+
+        
+        
+
+        <h2 class="section-title">Source Code</h2>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-0')">
+                <span class="filename">findOrfs.py</span>
+                <span>
+                    <span class="lang-tag">Python</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-0" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">sequenceAnalysis</span> <span class="kn">import</span> <span class="n">FastAreader</span><span class="p">,</span> <span class="n">NucParams</span><span class="p">,</span> <span class="n">ProteinParam</span>
+<span class="k">class</span> <span class="nc">FindOrfs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds Open Reading Frames (ORFs) in a DNA sequence.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sequence (str): The input DNA sequence.</span>
+<span class="sd">        startCodon (tuple): Tuple containing start codons. Default is (&#39;ATG&#39;,).</span>
+<span class="sd">        stopCodon (tuple): Tuple containing stop codons. Default is (&#39;TAG&#39;, &#39;TAA&#39;, &#39;TGA&#39;).</span>
+<span class="sd">        biggestOrfOnly (bool): Flag to indicate whether to output only the longest gene found. Default is False.</span>
+<span class="sd">        minOrf (int): Minimum gene length to include. Default is 1.</span>
+<span class="sd">        dangle (bool): Flag to indicate whether to output the dangling bit. Default is True.</span>
+<span class="sd">        revSequence (str): The reverse complement of the input DNA sequence.</span>
+<span class="sd">        geneCandidates (list): List containing gene candidate indexes, start, stop, length, and frame.</span>
+<span class="sd">        sequenceLength (int): Length of the input DNA sequence.</span>
+<span class="sd">        geneSequences (list): List containing gene sequences.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span><span class="n">startCodon</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ATG&#39;</span><span class="p">),</span> <span class="n">stopCodon</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;TAG&#39;</span><span class="p">,</span><span class="s1">&#39;TAA&#39;</span><span class="p">,</span><span class="s1">&#39;TGA&#39;</span><span class="p">),</span><span class="n">biggestOrfOnly</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">minOrf</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">dangle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">showGenes</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes FindOrfs with the provided parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sequence (str): The input DNA sequence.</span>
+<span class="sd">            startCodon (tuple): Tuple containing start codons. Default is (&#39;ATG&#39;,).</span>
+<span class="sd">            stopCodon (tuple): Tuple containing stop codons. Default is (&#39;TAG&#39;, &#39;TAA&#39;, &#39;TGA&#39;).</span>
+<span class="sd">            biggestOrfOnly (bool): Flag to indicate whether to output only the longest gene found. Default is False.</span>
+<span class="sd">            minOrf (int): Minimum gene length to include. Default is 1.</span>
+<span class="sd">            dangle (bool): Flag to indicate whether to output the dangling bit. Default is True.</span>
+<span class="sd">            showGenes (bool): Flag to indicate whether to show gene sequences. Default is False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showGenes</span> <span class="o">=</span> <span class="n">showGenes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="o">=</span> <span class="n">dangle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="n">sequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverseSequence</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span> <span class="o">=</span> <span class="n">startCodon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span> <span class="o">=</span> <span class="n">stopCodon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="o">=</span> <span class="n">biggestOrfOnly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span> <span class="o">=</span> <span class="n">minOrf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geneCandidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findGenes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequenceLength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geneSequences</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findGeneSequences</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">reverseSequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates the reverse complement of the input DNA sequence.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The reverse complement of the input DNA sequence.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">complement</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">}</span>
+        <span class="n">reverse_sequence</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">complement</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">reverse_sequence</span>
+    
+    <span class="k">def</span> <span class="nf">getGenes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geneCandidates</span>
+    <span class="k">def</span> <span class="nf">getGeneSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geneSequences</span>
+    
+    <span class="k">def</span> <span class="nf">findGeneSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds gene sequences.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List containing gene sequences.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">geneSequences</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">geneCandidates</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gene</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">geneSequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">gene</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+                <span class="n">gene</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">gene</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#convert to reverse strand index</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+                <span class="n">stop</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">geneSequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">])</span>
+                <span class="n">gene</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">geneSequences</span>
+
+    <span class="k">def</span> <span class="nf">findGenes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds Open Reading Frames (ORFs) in the DNA sequence.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List containing gene candidate indexes, start, stop, length, and frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">geneCandidates</span> <span class="o">=</span> <span class="p">[]</span>
+        
+
+        <span class="c1">#forward sequence</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="c1"># Generate possible start codon positions for the current frame</span>
+            <span class="n">frameStarts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span> <span class="o">-</span><span class="mi">2</span> <span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">codon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                <span class="c1"># beginning dangle</span>
+                
+                <span class="k">if</span> <span class="p">(</span><span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frame</span><span class="p">):</span>
+                    <span class="n">startCodonIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                
+                <span class="k">elif</span> <span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frameStarts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                    
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">biggestStart</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">biggestStart</span><span class="p">:</span>
+                                <span class="n">biggestStart</span> <span class="o">=</span> <span class="n">start</span>
+                        <span class="c1"># Calculate gene length and append gene information if it meets minimum length criteria</span>
+                        <span class="n">geneCandidate</span><span class="o">=</span> <span class="p">[</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">biggestStart</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">biggestStart</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                            <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="c1"># frame ,  start codon, sStop Codon , length      indexes for top strand</span>
+                            <span class="n">geneCandidate</span> <span class="o">=</span> <span class="p">[(</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">start</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                                <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>
+                    <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+            
+
+                       
+                       
+        <span class="c1">#reverse sequence</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Generate possible start codon positions for the current frame on the reverse sequence</span>
+            <span class="n">frameStarts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">codon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                <span class="c1"># beginning dangle</span>
+                
+                <span class="k">if</span> <span class="p">(</span><span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frame</span><span class="p">):</span>
+                    <span class="n">startCodonIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                
+                <span class="k">elif</span> <span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frameStarts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">biggestStart</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">biggestStart</span><span class="p">:</span>
+                                <span class="n">biggestStart</span> <span class="o">=</span> <span class="n">start</span>
+                            <span class="c1"># frame ,    stop codon , start codon,  length      indexes for top strand</span>
+                        <span class="n">geneCandidate</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>   <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">biggestStart</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">biggestStart</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                            <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="n">geneCandidate</span><span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                                <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>        
+                    <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+                
+        <span class="c1">#sort geneCandidates by length</span>
+        <span class="n">geneCandidates</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">geneCandidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">gene</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">gene</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>  
+        <span class="k">return</span> <span class="n">geneCandidates</span>
+    
+    <span class="k">def</span> <span class="nf">printGeneCandidates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints information about the gene candidates.</span>
+
+<span class="sd">        This method prints details such as start codon, stop codon, length, and frame of each gene candidate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">geneCandidatesTP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getGenes</span><span class="p">()</span>
+        <span class="c1">#inf = [self.startCodon,self.stopCodon,self.biggestOrfOnly,self.minOrf]</span>
+        <span class="c1">#print(f&quot;{inf[0]:&gt;15}{inf[1]:&gt;15}{inf[2]:&gt;15}{inf[3]:&gt;15}&quot;)</span>
+        <span class="n">inf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span><span class="p">)]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;biggest Orf: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;minimum Orf: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dangly: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;show Genes: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">showGenes</span><span class="p">))</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;start Codon&quot;</span><span class="p">,</span><span class="s2">&quot;Stop Codon&quot;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">label</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;30</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">inf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;30</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Frame&quot;</span><span class="p">,</span> <span class="s2">&quot;left Codon&quot;</span><span class="p">,</span><span class="s2">&quot;Right Codon&quot;</span><span class="p">,</span><span class="s2">&quot;Length&quot;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">info</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">geneCandidatesTP</span><span class="p">:</span>
+            <span class="c1">#print(&#39;gene: &#39;, end=&#39; &#39;)</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gene</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># Check if it&#39;s the fifth value (index starts from 0)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showGenes</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;               </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">&lt;15</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Print with specific alignment</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">&gt;15</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Print with default alignment</span>
+
+            <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sequence length: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequenceLength</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;revsequence length: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)))</span>
+    
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Entry point for the script.</span>
+
+<span class="sd">    Parses command-line arguments to find ORFs in DNA sequences provided in a FASTA file.</span>
+
+<span class="sd">    Command-line Arguments:</span>
+<span class="sd">        filename (str): Path to the input FASTA file.</span>
+<span class="sd">        --longestGene: Flag to indicate whether to output only the longest gene found.</span>
+<span class="sd">        --start (str): Start codons. Default is &#39;ATG&#39;.</span>
+<span class="sd">        --stop (str): Stop codons. Default is &#39;TAG TAA TGA&#39;.</span>
+<span class="sd">        --minGene (int): Minimum gene length to include. Default is 1.</span>
+<span class="sd">        --Nodangly: Flag to indicate whether to output the dangling bit. Default is True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Find Open Reading Frames (ORFs) in DNA sequences.&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Path to the input FASTA file&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--longestGene&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Only output the longest gene found&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--start&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ATG&#39;</span><span class="p">],</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Start codons (default: ATG)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--stop&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;TAG&#39;</span><span class="p">,</span> <span class="s1">&#39;TAA&#39;</span><span class="p">,</span> <span class="s1">&#39;TGA&#39;</span><span class="p">],</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Stop codons (default: TAG TAA TGA)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--minGene&#39;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Minimum gene length to include (default: 1)&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--Nodangly&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_false&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;dont output the dangling bit&#39;</span><span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--showGenes&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s1">&#39;show the gene sequences&#39;</span><span class="p">)</span>
+
+    
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="si">}</span><span class="s2"> analysis</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">myReader</span> <span class="o">=</span> <span class="n">FastAreader</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">myReader</span><span class="o">.</span><span class="n">readFasta</span><span class="p">():</span>
+        <span class="n">sequence</span> <span class="o">=</span> <span class="n">FindOrfs</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">startCodon</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">stopCodon</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="n">minOrf</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">minGene</span><span class="p">,</span> <span class="n">biggestOrfOnly</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">longestGene</span><span class="p">,</span> <span class="n">dangle</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">Nodangly</span><span class="p">,</span> <span class="n">showGenes</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">showGenes</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+        <span class="n">sequence</span><span class="o">.</span><span class="n">printGeneCandidates</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-1')">
+                <span class="filename">mainOrfs.py</span>
+                <span>
+                    <span class="lang-tag">Python</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-1" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">sequenceAnalysis</span> <span class="kn">import</span> <span class="n">FastAreader</span><span class="p">,</span> <span class="n">NucParams</span><span class="p">,</span> <span class="n">ProteinParam</span>
+<span class="k">class</span> <span class="nc">FindOrfs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Finds Open Reading Frames (ORFs) in a DNA sequence.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        sequence (str): The input DNA sequence.</span>
+<span class="sd">        startCodon (tuple): Tuple containing start codons. Default is (&#39;ATG&#39;,).</span>
+<span class="sd">        stopCodon (tuple): Tuple containing stop codons. Default is (&#39;TAG&#39;, &#39;TAA&#39;, &#39;TGA&#39;).</span>
+<span class="sd">        biggestOrfOnly (bool): Flag to indicate whether to output only the longest gene found. Default is False.</span>
+<span class="sd">        minOrf (int): Minimum gene length to include. Default is 1.</span>
+<span class="sd">        dangle (bool): Flag to indicate whether to output the dangling bit. Default is True.</span>
+<span class="sd">        revSequence (str): The reverse complement of the input DNA sequence.</span>
+<span class="sd">        geneCandidates (list): List containing gene candidate indexes, start, stop, length, and frame.</span>
+<span class="sd">        sequenceLength (int): Length of the input DNA sequence.</span>
+<span class="sd">        geneSequences (list): List containing gene sequences.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sequence</span><span class="p">,</span><span class="n">startCodon</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ATG&#39;</span><span class="p">),</span> <span class="n">stopCodon</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;TAG&#39;</span><span class="p">,</span><span class="s1">&#39;TAA&#39;</span><span class="p">,</span><span class="s1">&#39;TGA&#39;</span><span class="p">),</span><span class="n">biggestOrfOnly</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">minOrf</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="n">dangle</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">showGenes</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes FindOrfs with the provided parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            sequence (str): The input DNA sequence.</span>
+<span class="sd">            startCodon (tuple): Tuple containing start codons. Default is (&#39;ATG&#39;,).</span>
+<span class="sd">            stopCodon (tuple): Tuple containing stop codons. Default is (&#39;TAG&#39;, &#39;TAA&#39;, &#39;TGA&#39;).</span>
+<span class="sd">            biggestOrfOnly (bool): Flag to indicate whether to output only the longest gene found. Default is False.</span>
+<span class="sd">            minOrf (int): Minimum gene length to include. Default is 1.</span>
+<span class="sd">            dangle (bool): Flag to indicate whether to output the dangling bit. Default is True.</span>
+<span class="sd">            showGenes (bool): Flag to indicate whether to show gene sequences. Default is False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">showGenes</span> <span class="o">=</span> <span class="n">showGenes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="o">=</span> <span class="n">dangle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span> <span class="o">=</span> <span class="n">sequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverseSequence</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span> <span class="o">=</span> <span class="n">startCodon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span> <span class="o">=</span> <span class="n">stopCodon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="o">=</span> <span class="n">biggestOrfOnly</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span> <span class="o">=</span> <span class="n">minOrf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geneCandidates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findGenes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sequenceLength</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geneSequences</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">findGeneSequences</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">reverseSequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates the reverse complement of the input DNA sequence.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            str: The reverse complement of the input DNA sequence.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">complement</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span> <span class="s1">&#39;A&#39;</span><span class="p">}</span>
+        <span class="n">reverse_sequence</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">complement</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">reverse_sequence</span>
+    
+    <span class="k">def</span> <span class="nf">getGenes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geneCandidates</span>
+    <span class="k">def</span> <span class="nf">getGeneSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">geneSequences</span>
+    
+    <span class="k">def</span> <span class="nf">findGeneSequences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds gene sequences.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List containing gene sequences.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">geneSequences</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">geneCandidates</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">gene</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">geneSequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">gene</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+                <span class="n">gene</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="n">gene</span><span class="p">[</span><span class="mi">2</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#convert to reverse strand index</span>
+                <span class="n">start</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">gene</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+
+                <span class="n">stop</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">geneSequences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">])</span>
+                <span class="n">gene</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">stop</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">geneSequences</span>
+
+    <span class="k">def</span> <span class="nf">findGenes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Finds Open Reading Frames (ORFs) in the DNA sequence.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list: List containing gene candidate indexes, start, stop, length, and frame.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">geneCandidates</span> <span class="o">=</span> <span class="p">[]</span>
+        
+
+        <span class="c1">#forward sequence</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="c1"># Generate possible start codon positions for the current frame</span>
+            <span class="n">frameStarts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span> <span class="o">-</span><span class="mi">2</span> <span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">codon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sequence</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                <span class="c1"># beginning dangle</span>
+                
+                <span class="k">if</span> <span class="p">(</span><span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frame</span><span class="p">):</span>
+                    <span class="n">startCodonIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                
+                <span class="k">elif</span> <span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frameStarts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                    
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">biggestStart</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">biggestStart</span><span class="p">:</span>
+                                <span class="n">biggestStart</span> <span class="o">=</span> <span class="n">start</span>
+                        <span class="c1"># Calculate gene length and append gene information if it meets minimum length criteria</span>
+                        <span class="n">geneCandidate</span><span class="o">=</span> <span class="p">[</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">biggestStart</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">biggestStart</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                            <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="c1"># frame ,  start codon, sStop Codon , length      indexes for top strand</span>
+                            <span class="n">geneCandidate</span> <span class="o">=</span> <span class="p">[(</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">start</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                                <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>
+                    <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+            
+
+                       
+                       
+        <span class="c1">#reverse sequence</span>
+        <span class="k">for</span> <span class="n">frame</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="c1"># Generate possible start codon positions for the current frame on the reverse sequence</span>
+            <span class="n">frameStarts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+            
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span>  <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+                <span class="n">codon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                <span class="c1"># beginning dangle</span>
+                
+                <span class="k">if</span> <span class="p">(</span><span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frame</span><span class="p">):</span>
+                    <span class="n">startCodonIndex</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                
+                <span class="k">elif</span> <span class="n">codon</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="n">frameStarts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="n">biggestStart</span> <span class="o">=</span> <span class="nb">float</span> <span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">biggestStart</span><span class="p">:</span>
+                                <span class="n">biggestStart</span> <span class="o">=</span> <span class="n">start</span>
+                            <span class="c1"># frame ,    stop codon , start codon,  length      indexes for top strand</span>
+                        <span class="n">geneCandidate</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>   <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">biggestStart</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">biggestStart</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                            <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="n">startCodonIndex</span><span class="p">:</span>
+                            <span class="n">geneCandidate</span><span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">frame</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">start</span><span class="p">),</span> <span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">start</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span><span class="p">]</span>
+                            <span class="k">if</span> <span class="n">geneCandidate</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">:</span>
+                                <span class="n">geneCandidates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geneCandidate</span><span class="p">)</span>        
+                    <span class="n">startCodonIndex</span> <span class="o">=</span> <span class="p">[]</span>
+                
+        <span class="c1">#sort geneCandidates by length</span>
+        <span class="n">geneCandidates</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">geneCandidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">gene</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">gene</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">gene</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>  
+        <span class="k">return</span> <span class="n">geneCandidates</span>
+    
+    <span class="k">def</span> <span class="nf">printGeneCandidates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints information about the gene candidates.</span>
+
+<span class="sd">        This method prints details such as start codon, stop codon, length, and frame of each gene candidate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">geneCandidatesTP</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getGenes</span><span class="p">()</span>
+        <span class="c1">#inf = [self.startCodon,self.stopCodon,self.biggestOrfOnly,self.minOrf]</span>
+        <span class="c1">#print(f&quot;{inf[0]:&gt;15}{inf[1]:&gt;15}{inf[2]:&gt;15}{inf[3]:&gt;15}&quot;)</span>
+        <span class="n">inf</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">startCodon</span><span class="p">),</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stopCodon</span><span class="p">)]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;biggest Orf: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">biggestOrfOnly</span> <span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;minimum Orf: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">minOrf</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dangly: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dangle</span><span class="p">))</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;start Codon&quot;</span><span class="p">,</span><span class="s2">&quot;Stop Codon&quot;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">label</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;30</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">inf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">inf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;30</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Frame&quot;</span><span class="p">,</span> <span class="s2">&quot;left Codon&quot;</span><span class="p">,</span><span class="s2">&quot;Right Codon&quot;</span><span class="p">,</span><span class="s2">&quot;Length&quot;</span><span class="p">]</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">info</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}{</span><span class="n">info</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="si">:</span><span class="s2">&gt;15</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">geneCandidatesTP</span><span class="p">:</span>
+            <span class="c1">#print(&#39;gene: &#39;, end=&#39; &#39;)</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gene</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>  <span class="c1"># Check if it&#39;s the fifth value (index starts from 0)</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">showGenes</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;               </span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">&lt;15</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Print with specific alignment</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">value</span><span class="si">:</span><span class="s1">&gt;15</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>  <span class="c1"># Print with default alignment</span>
+
+            <span class="nb">print</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;sequence length: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sequenceLength</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;revsequence length: &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revSequence</span><span class="p">)))</span>
+    
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="s1">&#39;lab5test.fa&#39;</span><span class="p">):</span>
+    <span class="c1"># Get the absolute path of the script&#39;s directory</span>
+    <span class="n">script_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">))</span>
+    <span class="c1"># Construct the absolute path to the FA file</span>
+    <span class="n">file_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">script_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">file_path</span> <span class="o">+</span> <span class="s2">&quot; analysis</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">myReader</span> <span class="o">=</span> <span class="n">FastAreader</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">file_path</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">myReader</span><span class="o">.</span><span class="n">readFasta</span><span class="p">():</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">seq</span> <span class="o">+</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">myReader</span><span class="o">.</span><span class="n">readFasta</span><span class="p">():</span>
+        <span class="n">sequence</span> <span class="o">=</span> <span class="n">FindOrfs</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+        <span class="n">sequence</span><span class="o">.</span><span class="n">printGeneCandidates</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># You can specify the file name as an argument, or leave it blank to use the default file name &#39;lab5test.fa&#39;</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Enter the FASTA file name (or press Enter to use &#39;lab5test.fa&#39;): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">file_name</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">main</span><span class="p">()</span>
+
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="sd">def main (fname=&#39;lab5test.fa&#39;):</span>
+<span class="sd">    </span>
+<span class="sd">    </span>
+<span class="sd">    # Get the absolute path of the script&#39;s directory</span>
+<span class="sd">    script_dir = os.path.dirname(os.path.abspath(__file__))</span>
+<span class="sd">    # Construct the absolute path to the FA file</span>
+<span class="sd">    #fileName = &#39;lab5test.fa&#39;</span>
+<span class="sd">    #fileName = None</span>
+<span class="sd">    fileName = input(&#39;input file name&#39;)</span>
+<span class="sd">    file_path = os.path.join(script_dir, fileName)</span>
+
+<span class="sd">    print(&quot;\n&quot; + fileName + &quot; analysis\n&quot;)</span>
+
+
+<span class="sd">    #myReader = FastAreader(fileName=&#39;None&#39;) </span>
+<span class="sd">    #myReader = FastAreader(fname=file_path)  # Change fileName to fname</span>
+<span class="sd">    print(file_path)</span>
+<span class="sd">    myReader = FastAreader(fname=file_path)</span>
+<span class="sd">    print(file_path)</span>
+<span class="sd">    for head, seq in myReader.readFasta() :</span>
+<span class="sd">        print(file_path)</span>
+<span class="sd">        sequence = FindOrfs(seq)</span>
+<span class="sd">        print(head)</span>
+<span class="sd">        sequence.printGeneCandidates()</span>
+<span class="sd">    </span>
+
+<span class="sd">    myReader = FastAreader(fname=None)</span>
+<span class="sd">    </span>
+<span class="sd">    for head, seq in myReader.readFasta() :</span>
+<span class="sd">        sequence = FindOrfs(seq,startCodon = (&#39;ATG&#39;,&#39;TTG&#39;, &#39;GTG&#39;),minOrf=1, biggestOrfOnly=True)</span>
+<span class="sd">        print(head)</span>
+<span class="sd">        sequence.printGeneCandidates()</span>
+
+<span class="sd">   </span>
+<span class="sd">    </span>
+
+<span class="sd">if __name__ == &quot;__main__&quot;:</span>
+<span class="sd">    main() # make sure to change this in order to use stdin</span>
+<span class="sd">&#39;&#39;&#39;</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+function toggleCode(id) {
+    var el = document.getElementById(id);
+    var toggle = el.previousElementSibling.querySelector('.toggle');
+    if (el.classList.contains('collapsed')) {
+        el.classList.remove('collapsed');
+        toggle.textContent = '▼ collapse';
+    } else {
+        el.classList.add('collapsed');
+        toggle.textContent = '▶ expand';
+    }
+}
+</script>
+</body>
+</html>

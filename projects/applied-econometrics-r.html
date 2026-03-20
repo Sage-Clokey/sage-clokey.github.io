@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>applied-econometrics-r — Sage Clokey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+:root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #12121a;
+    --bg-card: #16161f;
+    --text-primary: #e8e6e3;
+    --text-secondary: #9a9a9a;
+    --accent: #4ecdc4;
+    --accent-hover: #45b7aa;
+    --border: #2a2a35;
+    --code-bg: #1a1a25;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Nav */
+nav {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+nav .nav-brand { font-weight: 700; font-size: 1.1rem; color: var(--text-primary); }
+nav a { color: var(--text-secondary); font-size: 0.9rem; }
+nav a:hover { color: var(--accent); text-decoration: none; }
+
+/* Repo header */
+.repo-header {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem;
+}
+.repo-header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+.repo-header .description { color: var(--text-secondary); margin-bottom: 1rem; }
+.repo-header .links { display: flex; gap: 1rem; }
+.repo-header .links a {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+.repo-header .links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+/* README */
+.readme-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+.readme-section h2,
+.readme-section h3,
+.readme-section h4 { margin-top: 1.5rem; margin-bottom: 0.5rem; }
+.readme-section p { margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section ul, .readme-section ol { margin-left: 1.5rem; margin-bottom: 1rem; color: var(--text-secondary); }
+.readme-section code {
+    background: var(--code-bg);
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+.readme-section pre {
+    background: var(--code-bg);
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+}
+.readme-section pre code { background: none; padding: 0; }
+.readme-section table {
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.readme-section th, .readme-section td {
+    border: 1px solid var(--border);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+}
+.readme-section th { background: var(--bg-secondary); }
+.readme-section hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+/* Code files */
+.code-section {
+    margin-bottom: 2rem;
+}
+.code-file-header {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+}
+.code-file-header:hover { background: var(--bg-card); }
+.code-file-header .filename { font-family: monospace; font-weight: 600; }
+.code-file-header .lang-tag {
+    background: var(--accent);
+    color: var(--bg-primary);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+.code-file-header .toggle { color: var(--text-secondary); font-size: 0.85rem; }
+.code-file-body {
+    border: 1px solid var(--border);
+    border-radius: 0 0 8px 8px;
+    overflow: hidden;
+}
+.code-file-body .highlight {
+    margin: 0;
+    padding: 1rem;
+    overflow-x: auto;
+    background: var(--code-bg) !important;
+}
+.code-file-body .highlight pre {
+    margin: 0;
+    background: transparent !important;
+    font-size: 0.85rem;
+    line-height: 1.5;
+}
+.code-file-body.collapsed { display: none; }
+
+/* Notebook output */
+.notebook-section {
+    margin-bottom: 2rem;
+}
+.notebook-section iframe {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: white;
+    min-height: 600px;
+}
+
+/* Section heading */
+.section-title {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    margin: 2rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Grid page styles */
+.page-header {
+    text-align: center;
+    padding: 3rem 0;
+}
+.page-header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.page-header p { color: var(--text-secondary); font-size: 1.1rem; }
+
+.repo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.25rem;
+    padding: 1rem 0 3rem;
+}
+.repo-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: border-color 0.2s, transform 0.2s;
+}
+.repo-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+}
+.repo-card h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    font-family: monospace;
+}
+.repo-card .desc {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+.repo-card .card-links {
+    display: flex;
+    gap: 0.75rem;
+}
+.repo-card .card-links a {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    transition: border-color 0.2s;
+}
+.repo-card .card-links a:hover {
+    border-color: var(--accent);
+    text-decoration: none;
+}
+
+@media (max-width: 600px) {
+    .container { padding: 1rem; }
+    .repo-grid { grid-template-columns: 1fr; }
+    nav { flex-wrap: wrap; gap: 0.75rem; }
+}
+</style>
+</head>
+<body>
+    <nav>
+        <span class="nav-brand">Sage Clokey</span>
+        <a href="../index.html">Home</a>
+        <a href="../bioinformatics.html">Bioinformatics CV</a>
+        <a href="../bioinformatics-projects.html">Projects</a>
+        <a href="../all-projects.html">All Repos</a>
+    </nav>
+
+    <div class="container">
+        <div class="repo-header">
+            <h1>applied-econometrics-r</h1>
+            <p class="description">Applied econometrics in R: OLS, causal inference, LASSO, random forest — 401k savings, NBA salaries, Lagos market pricing, NYC stop-and-frisk</p>
+            <div class="links">
+                <a href="https://github.com/Sage-Clokey/applied-econometrics-r" target="_blank" rel="noopener">View on GitHub</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">README</h2>
+        <div class="readme-section">
+            <h1 id="applied-econometrics-causal-inference-econ-124">Applied Econometrics &amp; Causal Inference — ECON 124</h1>
+<p>R-based econometrics coursework from ECON 124 at UC Santa Cruz. Covers OLS regression, causal inference, LASSO, and random forest prediction applied to real datasets.</p>
+<h2 id="assignments">Assignments</h2>
+<table>
+<thead>
+<tr>
+<th>Folder</th>
+<th>Dataset</th>
+<th>Methods</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>HW1A</code></td>
+<td>Survey / violent crime data</td>
+<td>Descriptive stats, OLS, interpretation</td>
+</tr>
+<tr>
+<td><code>HW1B</code></td>
+<td>cell-free DNA / fake news</td>
+<td>Regression, hypothesis testing</td>
+</tr>
+<tr>
+<td><code>HW2A</code></td>
+<td>NBA salary data</td>
+<td>OLS, omitted variable bias, yeast interchromosome workflow</td>
+</tr>
+<tr>
+<td><code>HW2B</code></td>
+<td>NBA salary data</td>
+<td>Extended OLS analysis</td>
+</tr>
+<tr>
+<td><code>HW3</code></td>
+<td>SIPP 1991 (401k savings)</td>
+<td>Causal inference, LASSO (glmnet), Random Forest</td>
+</tr>
+<tr>
+<td><code>hw Bonus</code></td>
+<td>NYC Stop-and-Frisk</td>
+<td>Racial bias regression analysis</td>
+</tr>
+</tbody>
+</table>
+<h2 id="final-project">Final Project</h2>
+<p><strong>"The Market as Tissue: A Multi-Scale Living Systems Analysis of Informal Price Formation in Lagos"</strong></p>
+<p>ML prediction of vendor-quoted rice prices in Lagos informal markets. Outcome variable is price-per-unit-weight quoted to buyers; covariates include buyer socioeconomic presentation (high/low class dress) and transaction context. Applies the Living Systems framework — markets as adaptive networks, not machines — to a causal inference problem. Uses Lagos micro-price dataset.</p>
+<p>Also includes <code>spiral_steward_extended.Rmd</code>: extended Spiral Steward econometric analysis connecting living systems theory to market dynamics.</p>
+<h2 id="tools">Tools</h2>
+<ul>
+<li>R, RMarkdown, HTML output</li>
+<li><code>lm()</code>, <code>glmnet</code> / <code>glmnetUtils</code>, <code>randomForest</code></li>
+<li><code>ggplot2</code>, base R plots</li>
+<li>Causal inference: selection bias, OVB, 401k eligibility as natural experiment</li>
+</ul>
+        </div>
+
+        
+        
+
+        <h2 class="section-title">Source Code</h2>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-0')">
+                <span class="filename">discussion2.R</span>
+                <span>
+                    <span class="lang-tag">R</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-0" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="c1"># Install and load package</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">require</span><span class="p">(</span><span class="s">&quot;readxl&quot;</span><span class="p">))</span><span class="w"> </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;readxl&quot;</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">readxl</span><span class="p">)</span>
+
+<span class="c1"># URL must be a single quoted string</span>
+<span class="n">url</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;https://data.chhs.ca.gov/dataset/99bc1fea-c55c-4377-bad8-f00832fd195d/resource/bc09f211-200c-4c4c-aa13-d2e89c0d5577/download/hci_crime_752_pl_co_re_ca_2000-2013_21oct15-ada.xlsx&quot;</span>
+
+<span class="c1"># Download to a temporary file</span>
+<span class="n">temp_file</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tempfile</span><span class="p">(</span><span class="n">fileext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;.xlsx&quot;</span><span class="p">)</span>
+<span class="nf">download.file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="w"> </span><span class="n">destfile</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">temp_file</span><span class="p">,</span><span class="w"> </span><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;wb&quot;</span><span class="p">)</span>
+
+<span class="c1"># Read Excel file</span>
+<span class="n">dfm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read_excel</span><span class="p">(</span><span class="n">temp_file</span><span class="p">)</span>
+<span class="n">df</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">dfm</span><span class="p">[</span><span class="n">dfm</span><span class="o">$</span><span class="n">reportyear</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="m">2013</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">dfm</span><span class="o">$</span><span class="n">geotype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;CO&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+
+<span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">na.omit</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">numerator</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">strata_level_name</span><span class="o">==</span><span class="s">&quot;robbery&quot;</span><span class="p">]))</span>
+
+<span class="n">sc</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">na.omit</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">numerator</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">county_name</span><span class="o">==</span><span class="s">&quot;santa cruz&quot;</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">strata_level_name_code</span><span class="o">==</span><span class="m">5</span><span class="p">]))</span><span class="o">/</span><span class="nf">sum</span><span class="p">(</span><span class="nf">na.omit</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">denominator</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">county_name</span><span class="o">==</span><span class="s">&quot;santa cruz&quot;</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">strata_level_name_code</span><span class="o">==</span><span class="m">5</span><span class="p">]))</span><span class="w"> </span><span class="o">*</span><span class="m">1000</span>
+<span class="n">rs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">na.omit</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">numerator</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">county_name</span><span class="o">==</span><span class="s">&quot;santa cruz&quot;</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">strata_level_name_code</span><span class="o">==</span><span class="m">5</span><span class="p">]))</span><span class="o">/</span><span class="nf">sum</span><span class="p">(</span><span class="nf">na.omit</span><span class="p">(</span><span class="n">df</span><span class="o">$</span><span class="n">denominator</span><span class="p">[</span><span class="n">df</span><span class="o">$</span><span class="n">county_name</span><span class="o">==</span><span class="s">&quot;riverside&quot;</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">df</span><span class="o">$</span><span class="n">strata_level_name_code</span><span class="o">==</span><span class="m">5</span><span class="p">]))</span><span class="w"> </span><span class="o">*</span><span class="m">1000</span>
+
+<span class="n">a</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">4</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">5</span><span class="p">,</span><span class="m">6</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">)</span>
+<span class="nf">table</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="nf">barplot</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+<span class="nf">barplot</span><span class="p">(</span><span class="nf">sort</span><span class="p">(</span><span class="nf">table</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-1')">
+                <span class="filename">ojdata12326.R</span>
+                <span>
+                    <span class="lang-tag">R</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-1" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="nf">setwd</span><span class="p">(</span><span class="s">&quot;C:/Users/SajcS/Desktop/econ 124&quot;</span><span class="p">)</span>
+<span class="nf">getwd</span><span class="p">()</span>
+
+<span class="n">ojdata</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&#39;oj.csv&#39;</span><span class="p">)</span>
+
+
+<span class="c1">#model 1</span>
+<span class="n">model_1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">price</span><span class="p">),</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ojdata</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">model_1</span><span class="p">)</span>
+
+<span class="c1">#model 2</span>
+<span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="p">)</span>
+<span class="n">model_2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">brand</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ojdata</span><span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">model_2</span><span class="p">)</span>
+
+<span class="c1">#model 3</span>
+<span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="p">)</span>
+<span class="n">model_3</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="o">*</span><span class="n">brand</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ojdata</span><span class="p">)</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">model_3</span><span class="p">)</span>
+
+<span class="c1">#creating the new data frame of xs for which we want to make predictions</span>
+<span class="n">new_dat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span><span class="n">price</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">2</span><span class="p">,</span><span class="m">3.5</span><span class="p">,</span><span class="m">3</span><span class="p">),</span><span class="w"> </span><span class="n">brand</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="s">&#39;dominicks&#39;</span><span class="p">,</span><span class="s">&#39;minute.maid&#39;</span><span class="p">,</span><span class="w"> </span><span class="s">&#39;tropicana&#39;</span><span class="p">))</span>
+<span class="n">new_dat</span>
+<span class="n">new_dat</span><span class="o">$</span><span class="n">brand</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">new_dat</span><span class="o">$</span><span class="n">brand</span><span class="p">)</span>
+
+<span class="c1">#make predictions</span>
+<span class="nf">predict</span><span class="p">(</span><span class="n">model_3</span><span class="p">,</span><span class="w"> </span><span class="n">new_dat</span><span class="p">)</span>
+
+
+
+<span class="n">email</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&#39;email.csv&#39;</span><span class="p">)</span>
+
+
+<span class="n">logit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="n">spam</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">email</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="o">=</span><span class="s">&#39;binomial&#39;</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">logit</span><span class="p">)</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-2')">
+                <span class="filename">ojdatalsl;s.R</span>
+                <span>
+                    <span class="lang-tag">R</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-2" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="nf">setwd</span><span class="p">(</span><span class="s">&quot;~econ 124&quot;</span><span class="p">)</span>
+
+<span class="n">ojdata</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&#39;oj.csv&#39;</span><span class="p">)</span>
+
+<span class="c1">#create brand indicators</span>
+<span class="n">ojdata</span><span class="o">$</span><span class="n">is_minutemaid</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;minute.maid&quot;</span><span class="p">)</span>
+
+<span class="n">ojdata</span><span class="o">$</span><span class="n">is_tropicana</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;tropicana&quot;</span><span class="p">)</span>
+
+<span class="nf">head</span><span class="p">(</span><span class="n">ojdata</span><span class="p">)</span>
+
+<span class="c1">#run ols</span>
+<span class="n">OLS_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">sales</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">price</span><span class="p">))</span>
+
+<span class="n">OLS_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">price</span><span class="p">),</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ojdata</span><span class="p">)</span>
+
+
+<span class="n">OLS_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">is_minutemaid</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">is_tropicana</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ojdata</span><span class="p">)</span><span class="w"> </span><span class="c1"># regress</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">OLS_model</span><span class="p">)</span>
+
+
+
+<span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="p">)</span>
+<span class="nf">levels</span><span class="p">(</span><span class="n">ojdata</span><span class="o">$</span><span class="n">brand</span><span class="p">)</span>
+
+<span class="n">OLS_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">sales</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">brand</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">=</span><span class="n">ojdata</span><span class="p">)</span><span class="w"> </span><span class="c1"># regress</span>
+
+<span class="nf">summary</span><span class="p">(</span><span class="n">OLS_model</span><span class="p">)</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-3')">
+                <span class="filename">HW3/hw3.R</span>
+                <span>
+                    <span class="lang-tag">R</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-3" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="c1"># ============================================================</span>
+<span class="c1"># Homework 3</span>
+<span class="c1"># Causal Inference and ML Prediction of 401k Savings Effects</span>
+<span class="c1"># Sage Clokey</span>
+<span class="c1"># 3/9/2026</span>
+<span class="c1"># ============================================================</span>
+
+<span class="nf">library</span><span class="p">(</span><span class="n">glmnetUtils</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">randomForest</span><span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Load Data</span>
+<span class="c1"># ============================================================</span>
+
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;sipp1991.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 1: OLS — net_tfa ~ age + inc + e401</span>
+<span class="c1"># ============================================================</span>
+
+<span class="n">ols1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">net_tfa</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">age</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">inc</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">e401</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">ols1</span><span class="p">)</span>
+
+<span class="c1"># 1a) Interpretation of e401 coefficient (assuming causality):</span>
+<span class="c1">#</span>
+<span class="c1"># The coefficient on e401 represents the average increase in net total</span>
+<span class="c1"># financial assets (in dollars) from an employer offering a 401k plan,</span>
+<span class="c1"># holding age and income constant. If interpreted causally, it tells us</span>
+<span class="c1"># how much total savings increases purely due to 401k availability —</span>
+<span class="c1"># i.e., offering a 401k raises individual savings by approximately [coef]</span>
+<span class="c1"># dollars on average, controlling for age and income.</span>
+
+<span class="c1"># 1b) Why e401 is not causally identified:</span>
+<span class="c1">#</span>
+<span class="c1"># The offer of a 401k is not randomly assigned across employers. Firms that</span>
+<span class="c1"># offer 401k plans tend to be larger, higher-quality employers that also pay</span>
+<span class="c1"># more and attract workers with stronger preferences for financial planning</span>
+<span class="c1"># and savings. Even after controlling for age and income, unobserved variables</span>
+<span class="c1"># such as savings preferences, financial literacy, and firm quality remain</span>
+<span class="c1"># correlated with both e401 and net_tfa. This omitted variable bias means</span>
+<span class="c1"># the OLS coefficient on e401 likely overstates the causal effect of 401k</span>
+<span class="c1"># availability on savings.</span>
+
+<span class="c1"># 1c) How the &quot;job choice based on pay&quot; argument helps:</span>
+<span class="c1">#</span>
+<span class="c1"># If workers in the 1990s chose jobs primarily based on salary and did not</span>
+<span class="c1"># consider 401k availability, then conditional on age and income (proxies</span>
+<span class="c1"># for pay), whether an employer happens to offer a 401k is effectively</span>
+<span class="c1"># random with respect to worker characteristics like savings preferences.</span>
+<span class="c1"># This makes e401 conditionally independent of the error term, satisfying</span>
+<span class="c1"># the assumption needed to give the OLS coefficient a causal interpretation.</span>
+<span class="c1"># In other words, it rules out the self-selection bias described in part b).</span>
+
+<span class="c1"># 1d) Why the argument fails for p401 (enrollment):</span>
+<span class="c1">#</span>
+<span class="c1"># Even if workers do not choose jobs based on 401k availability, once offered</span>
+<span class="c1"># a 401k, they actively choose whether to enroll. Workers who opt in likely</span>
+<span class="c1"># have stronger savings preferences than those who decline. This self-selection</span>
+<span class="c1"># means p401 is correlated with unobserved savings preferences — even within</span>
+<span class="c1"># the same age-income cell — violating conditional independence. The &quot;people</span>
+<span class="c1"># don&#39;t notice 401k offers&quot; argument applies only to the employer&#39;s decision</span>
+<span class="c1"># to offer (e401), not to the worker&#39;s voluntary decision to enroll (p401).</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 2: Post-Lasso</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 2a) Age coefficient from Problem 1 and plausibility</span>
+
+<span class="n">age_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">ols1</span><span class="p">)[</span><span class="s">&quot;age&quot;</span><span class="p">]</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Coefficient on age:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">age_coef</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># A one-year increase in age is associated with a change of [age_coef] dollars</span>
+<span class="c1"># in net financial assets, holding income and e401 fixed. For older individuals</span>
+<span class="c1"># (e.g., nearing retirement), a constant linear effect is implausible: savings</span>
+<span class="c1"># rates typically accelerate as retirement approaches, then fall afterward.</span>
+<span class="c1"># The linear model cannot capture this curvature. We also cannot interpret</span>
+<span class="c1"># this as a causal effect because age is not randomly assigned and is</span>
+<span class="c1"># correlated with many omitted factors (work experience, cohort effects,</span>
+<span class="c1"># life-stage savings patterns).</span>
+
+<span class="c1"># 2b) Post-lasso Steps 1 and 2 — Lasso with 3-fold CV</span>
+
+<span class="c1"># Controls: factor(age), factor(educ), poly(inc,3), poly(fsize,3),</span>
+<span class="c1"># db, marr, twoearn, pira, hown, and all pairwise interactions via (...)^2.</span>
+<span class="c1"># p401 is excluded as instructed; e401 is the treatment, not a control.</span>
+
+<span class="n">controls_vars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="s">&quot;factor(age) + factor(educ) + poly(inc, 3, raw=TRUE) +</span>
+<span class="s">                  poly(fsize, 3, raw=TRUE) + db + marr + twoearn + pira + hown&quot;</span>
+
+<span class="n">controls_rhs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">paste0</span><span class="p">(</span><span class="s">&quot;(&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">controls_vars</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;)^2&quot;</span><span class="p">)</span>
+
+<span class="n">formula_Y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.formula</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;net_tfa ~&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">controls_rhs</span><span class="p">))</span>
+<span class="n">formula_D</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.formula</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;e401 ~&quot;</span><span class="p">,</span><span class="w">   </span><span class="n">controls_rhs</span><span class="p">))</span>
+
+<span class="c1"># Step 1: Lasso Y (outcome) on controls</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="n">lasso_Y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cv.glmnet</span><span class="p">(</span><span class="n">formula_Y</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">nfolds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+
+<span class="c1"># Step 2: Lasso D (treatment) on controls</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="n">lasso_D</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cv.glmnet</span><span class="p">(</span><span class="n">formula_D</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">nfolds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">3</span><span class="p">)</span>
+
+<span class="c1"># 2c) Step 3: Union of selected controls</span>
+
+<span class="n">coef_Y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">lasso_Y</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda.min&quot;</span><span class="p">)</span>
+<span class="n">coef_D</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">lasso_D</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda.min&quot;</span><span class="p">)</span>
+
+<span class="n">vars_Y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">coef_Y</span><span class="p">)[</span><span class="n">coef_Y</span><span class="p">[,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">coef_Y</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;(Intercept)&quot;</span><span class="p">]</span>
+<span class="n">vars_D</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">coef_D</span><span class="p">)[</span><span class="n">coef_D</span><span class="p">[,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">coef_D</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;(Intercept)&quot;</span><span class="p">]</span>
+
+<span class="n">selected_vars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">union</span><span class="p">(</span><span class="n">vars_Y</span><span class="p">,</span><span class="w"> </span><span class="n">vars_D</span><span class="p">)</span>
+
+<span class="n">n_total</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">coef_Y</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span>
+<span class="n">n_selected</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">selected_vars</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Total potential control variables:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n_total</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Controls selected by post-lasso:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n_selected</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># Running OLS with all potential controls would be a bad idea: the number of</span>
+<span class="c1"># controls likely approaches or exceeds the sample size, making OLS estimates</span>
+<span class="c1"># numerically unstable or undefined due to perfect multicollinearity. Post-lasso</span>
+<span class="c1"># selects a parsimonious subset, avoiding overfitting and preserving valid</span>
+<span class="c1"># inference in the final OLS step.</span>
+
+<span class="c1"># 2d) Step 4: Post-lasso OLS</span>
+
+<span class="c1"># Build full model matrix from controls formula; extract selected columns</span>
+<span class="n">X_mat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">model.matrix</span><span class="p">(</span><span class="n">formula_Y</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">)[,</span><span class="w"> </span><span class="m">-1</span><span class="p">]</span><span class="w">  </span><span class="c1"># drop intercept column</span>
+
+<span class="n">selected_in_mat</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">intersect</span><span class="p">(</span><span class="n">selected_vars</span><span class="p">,</span><span class="w"> </span><span class="nf">colnames</span><span class="p">(</span><span class="n">X_mat</span><span class="p">))</span>
+
+<span class="n">df_postlasso</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
+<span class="w">  </span><span class="n">net_tfa</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="o">$</span><span class="n">net_tfa</span><span class="p">,</span>
+<span class="w">  </span><span class="n">e401</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="o">$</span><span class="n">e401</span><span class="p">,</span>
+<span class="w">  </span><span class="n">X_mat</span><span class="p">[,</span><span class="w"> </span><span class="n">selected_in_mat</span><span class="p">,</span><span class="w"> </span><span class="n">drop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">ols_postlasso</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">net_tfa</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_postlasso</span><span class="p">)</span>
+<span class="nf">summary</span><span class="p">(</span><span class="n">ols_postlasso</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nPost-lasso e401 coefficient:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">ols_postlasso</span><span class="p">)[</span><span class="s">&quot;e401&quot;</span><span class="p">],</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Simple OLS e401 coefficient:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">ols1</span><span class="p">)[</span><span class="s">&quot;e401&quot;</span><span class="p">],</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># With richer controls, the post-lasso estimate is more credible. If it is</span>
+<span class="c1"># smaller than Problem 1&#39;s estimate, the simple OLS was upward-biased by</span>
+<span class="c1"># uncontrolled confounders correlated with both e401 and net_tfa.</span>
+
+<span class="c1"># 2e) Counterfactual: average savings if all employers offered 401k</span>
+
+<span class="n">df_cf</span><span class="w">      </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">df_postlasso</span>
+<span class="n">df_cf</span><span class="o">$</span><span class="n">e401</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span>
+
+<span class="n">pred_cf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">ols_postlasso</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">df_cf</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nActual mean net_tfa:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">data</span><span class="o">$</span><span class="n">net_tfa</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Counterfactual mean net_tfa (all e401=1):&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">pred_cf</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># In a linear model, mean(pred_cf) - mean(df_postlasso$net_tfa)</span>
+<span class="c1"># = beta_e401 * (1 - mean(e401)), the average treatment effect scaled by</span>
+<span class="c1"># the share of workers currently not offered a 401k.</span>
+
+<span class="c1"># 2f) Validity of part d) if controls are not valid for causal inference:</span>
+<span class="c1">#</span>
+<span class="c1"># No. Post-lasso is a statistical tool for selecting relevant controls; it</span>
+<span class="c1"># does not create identification on its own. If the selected controls do not</span>
+<span class="c1"># make e401 conditionally independent of the error term (e.g., if unobserved</span>
+<span class="c1"># savings preferences remain correlated with e401 after conditioning), the</span>
+<span class="c1"># step 4 estimate is still biased. Causal validity depends entirely on the</span>
+<span class="c1"># economic argument in part 1c — not on the number or method of control</span>
+<span class="c1"># selection.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 3: ML Prediction of net_tfa</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 3a) Random Forest: 200 trees, minimum leaf size (nodesize) = 10</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="n">rf_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">randomForest</span><span class="p">(</span><span class="n">net_tfa</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">ntree</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">200</span><span class="p">,</span><span class="w"> </span><span class="n">nodesize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">)</span>
+
+<span class="n">oos_r2_rf</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">tail</span><span class="p">(</span><span class="n">rf_model</span><span class="o">$</span><span class="n">rsq</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w">   </span><span class="c1"># OOB R² after all 200 trees (built-in)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nRandom Forest OOS R² (OOB):&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">oos_r2_rf</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">rf_model</span><span class="p">)</span>
+
+<span class="c1"># 3b) Lasso for prediction: same controls as post-lasso, interacted with e401 and p401</span>
+
+<span class="n">formula_pred</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.formula</span><span class="p">(</span>
+<span class="w">  </span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;net_tfa ~ (e401 + p401 +&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">controls_vars</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;)^2&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+<span class="n">lasso_pred</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cv.glmnet</span><span class="p">(</span><span class="n">formula_pred</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">nfolds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+
+<span class="c1"># OOS R²: 1 - (CV MSE at lambda.min) / Var(Y)</span>
+<span class="n">oos_r2_lasso</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">lasso_pred</span><span class="o">$</span><span class="n">cvm</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">data</span><span class="o">$</span><span class="n">net_tfa</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Lasso OOS R²:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">oos_r2_lasso</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nComparison:\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Random Forest OOS R²:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">oos_r2_rf</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;  Lasso OOS R²:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">oos_r2_lasso</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># Random forest does not require specifying a functional form and automatically</span>
+<span class="c1"># captures complex nonlinear and interaction effects. If it outperforms lasso,</span>
+<span class="c1"># this suggests meaningful nonlinearities in the relationship between covariates</span>
+<span class="c1"># and savings that lasso&#39;s basis-function approach does not fully capture.</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-4')">
+                <span class="filename">hw Bonus/hw_bonus.R</span>
+                <span>
+                    <span class="lang-tag">R</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-4" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="c1"># ============================================================</span>
+<span class="c1"># Homework Bonus</span>
+<span class="c1"># Predicting NYPD Stop-and-Frisk Outcomes Using Logit and Lasso</span>
+<span class="c1"># Sage Clokey</span>
+<span class="c1"># 3/3/2026</span>
+<span class="c1"># ============================================================</span>
+
+<span class="nf">library</span><span class="p">(</span><span class="n">glmnetUtils</span><span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 1: Data Cleaning</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 1a) Load data and drop unwanted variables</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;NY_stop_frisk.csv&quot;</span><span class="p">)</span>
+
+<span class="n">pf_vars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">data</span><span class="p">)[</span><span class="nf">startsWith</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">data</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;PF_&quot;</span><span class="p">)]</span>
+<span class="n">unwanted_vars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;DOBNUM&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;OFFCODE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SEARCHED&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">pf_vars</span><span class="p">)</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="p">[,</span><span class="w"> </span><span class="o">!</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">unwanted_vars</span><span class="p">)]</span>
+
+<span class="c1"># 1b) Drop observations where OFFUNIF == -9 or EYECOLOR == &#39;DF&#39;</span>
+<span class="n">data</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">$</span><span class="n">OFFUNIF</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">-9</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="n">data</span><span class="o">$</span><span class="n">EYECOLOR</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;DF&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 2: Convert Categorical Variables to Factors</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 2a) Create vector of column indices for categorical variables</span>
+<span class="c1"># Based on the codebook: BORO, DAYSTOP2, TIMESTP2, INOUT, TRHSLOC,</span>
+<span class="c1"># TYPEOFID, SEX, RACE, HAIRCOLR, EYECOLOR, BUILD are categorical.</span>
+<span class="c1"># Do NOT convert binary (0/1) variables or continuous numeric variables (AGE, etc.)</span>
+
+<span class="n">cat_vars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;BORO&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DAYSTOP2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TIMESTP2&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;INOUT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TRHSLOC&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;TYPEOFID&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SEX&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;RACE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;HAIRCOLR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;EYECOLOR&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BUILD&quot;</span><span class="p">)</span>
+
+<span class="n">cat_vars</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">cat_vars</span><span class="p">[</span><span class="n">cat_vars</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">data</span><span class="p">)]</span><span class="w">  </span><span class="c1"># keep only those present</span>
+<span class="n">cat_indices</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="o">%in%</span><span class="w"> </span><span class="n">cat_vars</span><span class="p">)</span>
+
+<span class="c1"># 2b) Loop over indices to convert each column to a factor</span>
+<span class="nf">for </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">cat_indices</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">data</span><span class="p">[,</span><span class="w"> </span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">factor</span><span class="p">(</span><span class="n">data</span><span class="p">[,</span><span class="w"> </span><span class="n">i</span><span class="p">])</span>
+<span class="p">}</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 3: 5-Fold Cross-Validation Logit (Plain)</span>
+<span class="c1"># ============================================================</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+
+<span class="n">n</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">k</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">5</span>
+<span class="n">folds</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="nf">rep</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="n">k</span><span class="p">,</span><span class="w"> </span><span class="n">length.out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="p">))</span>
+
+<span class="n">total_deviance_logit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">0</span>
+
+<span class="nf">for </span><span class="p">(</span><span class="n">fold</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="m">1</span><span class="o">:</span><span class="n">k</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">train</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">folds</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">fold</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+<span class="w">  </span><span class="n">test</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">data</span><span class="p">[</span><span class="n">folds</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">fold</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+
+<span class="w">  </span><span class="n">model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glm</span><span class="p">(</span><span class="n">FRISKED</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">train</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">binomial</span><span class="p">)</span>
+
+<span class="w">  </span><span class="n">pred</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">test</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;response&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="n">pred</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">pmax</span><span class="p">(</span><span class="nf">pmin</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1e-10</span><span class="p">),</span><span class="w"> </span><span class="m">1e-10</span><span class="p">)</span><span class="w">  </span><span class="c1"># clip to avoid log(0)</span>
+
+<span class="w">  </span><span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">test</span><span class="o">$</span><span class="n">FRISKED</span>
+<span class="w">  </span><span class="n">total_deviance_logit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">total_deviance_logit</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="p">(</span><span class="m">-2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">y</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">pred</span><span class="p">)))</span>
+<span class="p">}</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;CV OOS Deviance (Logit):&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">total_deviance_logit</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 4: Lasso Logit</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 4a) Lasso with 5-fold CV using glmnetUtils regression syntax</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">1</span><span class="p">)</span>
+
+<span class="n">lasso_cv</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cv.glmnet</span><span class="p">(</span><span class="n">FRISKED</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;binomial&quot;</span><span class="p">,</span>
+<span class="w">                      </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">nfolds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+
+<span class="n">lambda_opt</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lasso_cv</span><span class="o">$</span><span class="n">lambda.min</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Optimal lambda:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lambda_opt</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># 4b) 1x2 plot: regularization path and CV error vs log(lambda)</span>
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">2</span><span class="p">))</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">lasso_cv</span><span class="o">$</span><span class="n">glmnet.fit</span><span class="p">,</span><span class="w"> </span><span class="n">xvar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Lasso Regularization Path&quot;</span><span class="p">)</span>
+<span class="nf">abline</span><span class="p">(</span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">lambda_opt</span><span class="p">),</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">lty</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">2</span><span class="p">)</span>
+
+<span class="nf">plot</span><span class="p">(</span><span class="n">lasso_cv</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;CV Error vs log(lambda)&quot;</span><span class="p">)</span>
+
+<span class="c1"># The optimal penalty (red dashed line) appears in-between the extremes,</span>
+<span class="c1"># suggesting moderate regularization — neither the full model nor a near-empty one.</span>
+
+<span class="c1"># 4c) Total regressors vs. nonzero regressors under optimal penalty</span>
+<span class="n">coef_lasso</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">lasso_cv</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda.min&quot;</span><span class="p">)</span>
+
+<span class="n">n_total</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">coef_lasso</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="w">          </span><span class="c1"># exclude intercept</span>
+<span class="n">n_nonzero</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">coef_lasso</span><span class="p">[</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="p">]</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Total regressors:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n_total</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Nonzero regressors chosen by lasso:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">n_nonzero</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># If n_nonzero is much smaller than n_total, the model has relatively LOW complexity.</span>
+
+<span class="c1"># 4d) Sort nonzero coefficients by magnitude, print top 20</span>
+<span class="n">coef_vec</span><span class="w">     </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">coef_lasso</span><span class="p">[</span><span class="m">-1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">                      </span><span class="c1"># drop intercept, make named vector</span>
+<span class="n">nonzero_coefs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">coef_vec</span><span class="p">[</span><span class="n">coef_vec</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">               </span><span class="c1"># keep nonzero</span>
+<span class="n">sorted_idx</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">nonzero_coefs</span><span class="p">),</span><span class="w"> </span><span class="n">decreasing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">top20</span><span class="w">        </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">nonzero_coefs</span><span class="p">[</span><span class="n">sorted_idx</span><span class="p">][</span><span class="m">1</span><span class="o">:</span><span class="nf">min</span><span class="p">(</span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">nonzero_coefs</span><span class="p">))]</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">top20</span><span class="p">)</span>
+
+<span class="c1"># Strong predictors (large |coef|) are likely RF_* (reasons for frisk) and</span>
+<span class="c1"># CS_* (circumstances of stop) variables. Signs should make intuitive sense:</span>
+<span class="c1"># e.g., RF_VCRIM (violent crime suspected) should have a positive coefficient.</span>
+
+<span class="c1"># 4e) Effect of largest-coefficient variable on odds of being frisked</span>
+<span class="n">top_var</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">names</span><span class="p">(</span><span class="n">top20</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span>
+<span class="n">top_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">nonzero_coefs</span><span class="p">[</span><span class="n">top_var</span><span class="p">]</span>
+<span class="n">odds_mult</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">exp</span><span class="p">(</span><span class="n">top_coef</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nVariable with largest |coefficient|:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">top_var</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Coefficient:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">top_coef</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Odds multiplier (exp(coef)):&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">odds_mult</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># Interpretation: a one-unit change in [top_var] multiplies the odds of being</span>
+<span class="c1"># frisked by exp(coef). If this is a 0/1 variable, the effect is the odds ratio</span>
+<span class="c1"># for having that characteristic vs. not. A large multiplier (e.g., &gt;5 or &lt;0.2)</span>
+<span class="c1"># indicates a substantial effect.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 5: Predictive Performance</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 5a) Predicted probabilities histogram</span>
+<span class="nf">par</span><span class="p">(</span><span class="n">mfrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">))</span>
+<span class="n">pred_all</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.vector</span><span class="p">(</span><span class="nf">predict</span><span class="p">(</span><span class="n">lasso_cv</span><span class="p">,</span><span class="w"> </span><span class="n">newdata</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">,</span>
+<span class="w">                               </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda.min&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;response&quot;</span><span class="p">))</span>
+<span class="nf">hist</span><span class="p">(</span><span class="n">pred_all</span><span class="p">,</span><span class="w"> </span><span class="n">breaks</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">30</span><span class="p">,</span>
+<span class="w">     </span><span class="n">main</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Predicted Probabilities of Being Frisked&quot;</span><span class="p">,</span>
+<span class="w">     </span><span class="n">xlab</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Predicted Probability&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;steelblue&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">border</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;white&quot;</span><span class="p">)</span>
+
+<span class="c1"># If most predictions cluster near 0 or 1, the algorithm is highly certain —</span>
+<span class="c1"># suggesting possible overfitting. If spread across [0,1], it is more uncertain.</span>
+
+<span class="c1"># 5b) CV OOS deviance comparison and OOS R^2</span>
+<span class="n">cv_deviance_lasso</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">lasso_cv</span><span class="o">$</span><span class="n">cvm</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">n</span><span class="w">  </span><span class="c1"># total OOS deviance across all obs</span>
+
+<span class="c1"># Null model deviance (intercept-only: always predicts p_bar)</span>
+<span class="n">p_bar</span><span class="w">       </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">data</span><span class="o">$</span><span class="n">FRISKED</span><span class="p">)</span>
+<span class="n">null_dev</span><span class="w">    </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">-2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="n">data</span><span class="o">$</span><span class="n">FRISKED</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">p_bar</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">                          </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">data</span><span class="o">$</span><span class="n">FRISKED</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">p_bar</span><span class="p">))</span>
+
+<span class="n">oos_r2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">cv_deviance_lasso</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">null_dev</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nCV OOS Deviance (Logit):&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">total_deviance_logit</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;CV OOS Deviance (Lasso):&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cv_deviance_lasso</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;OOS R^2 (Lasso):&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">oos_r2</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="c1"># If OOS R^2 is close to 0, the algorithm predicts poorly relative to just</span>
+<span class="c1"># guessing the mean. If close to 1, it predicts well.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 6: Policy Discussion</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 6a) Representativeness assumption for predicting frisking by race next year:</span>
+<span class="c1">#</span>
+<span class="c1"># The representativeness assumption is implausible, but the deeper problem is</span>
+<span class="c1"># that the entire stop-and-frisk program violates the non-aggression principle.</span>
+<span class="c1"># Every observation in this dataset represents a person who was physically</span>
+<span class="c1"># detained by the state without having harmed anyone or damaged anyone&#39;s</span>
+<span class="c1"># property. The data does not measure dangerousness — it measures how often</span>
+<span class="c1"># the government initiated force against innocent people. Projecting this</span>
+<span class="c1"># forward by race compounds the injustice: it assumes the state will continue</span>
+<span class="c1"># to coercively stop individuals based on characteristics they did not choose,</span>
+<span class="c1"># in neighborhoods they happen to live in. Even if the statistical model were</span>
+<span class="c1"># perfectly representative, it would still be predicting the perpetuation of</span>
+<span class="c1"># rights violations. The correct libertarian answer is not to build a better</span>
+<span class="c1"># predictive model of who gets frisked — it is to abolish the policy entirely,</span>
+<span class="c1"># since no individual should be subjected to an involuntary physical search</span>
+<span class="c1"># absent probable cause of an actual crime against another person.</span>
+
+<span class="c1"># 6b) Problems with using the algorithm to &quot;objectively&quot; decide whether to frisk:</span>
+<span class="c1">#</span>
+<span class="c1"># Dressing up coercion in the language of algorithms does not make it voluntary</span>
+<span class="c1"># or just. The core problem is not technical — it is moral. Under the non-</span>
+<span class="c1"># aggression principle, the state has no legitimate authority to physically</span>
+<span class="c1"># search a person who has not initiated force or fraud against another. An</span>
+<span class="c1"># 80% predicted probability does not constitute evidence of an actual crime;</span>
+<span class="c1"># it is a statistical guess that punishes individuals for who they are rather</span>
+<span class="c1"># than what they have done. Several practical failures compound this:</span>
+<span class="c1">#</span>
+<span class="c1">#   - The model was trained on officer behavior, not actual threats, so it</span>
+<span class="c1">#     encodes and automates existing patterns of state aggression rather than</span>
+<span class="c1">#     identifying genuine danger.</span>
+<span class="c1">#   - Lasso selects variables like location, time, race, and clothing — none</span>
+<span class="c1">#     of which represent a rights violation by the suspect. Using them to</span>
+<span class="c1">#     justify a search treats people as guilty by association with a profile.</span>
+<span class="c1">#   - Calling the algorithm &quot;objective&quot; obscures that a human chose what data</span>
+<span class="c1">#     to collect, what outcome to predict, and what threshold to enforce.</span>
+<span class="c1">#     The state does not become neutral by outsourcing its decisions to a model.</span>
+<span class="c1">#   - Individuals who know the algorithm exists will rationally alter their</span>
+<span class="c1">#     behavior to avoid triggering it — not because they are dangerous, but</span>
+<span class="c1">#     because they wish to exercise their natural right to be left alone.</span>
+<span class="c1">#</span>
+<span class="c1"># The only legitimate use of predictive tools by law enforcement would be in</span>
+<span class="c1"># voluntary, consensual contexts — such as a private property owner choosing</span>
+<span class="c1"># who may enter their premises. Applied to public stops by armed agents of the</span>
+<span class="c1"># state, this algorithm is a machine for systematizing the violation of</span>
+<span class="c1"># individual liberty.</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-5')">
+                <span class="filename">HW2A/yeast_interchromosome_workflow.R</span>
+                <span>
+                    <span class="lang-tag">R</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-5" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="c1">############################################################</span>
+<span class="c1"># yeast_interchromosome_workflow.R</span>
+<span class="c1"># Hi-C analysis of interchromosomal centromere interactions</span>
+<span class="c1"># BME 105 – Genetics in the Genomics Era</span>
+<span class="c1">############################################################</span>
+
+<span class="c1"># Install packages if needed</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span><span class="nf">requireNamespace</span><span class="p">(</span><span class="s">&quot;BiocManager&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">quietly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">))</span>
+<span class="w">    </span><span class="nf">install.packages</span><span class="p">(</span><span class="s">&quot;BiocManager&quot;</span><span class="p">)</span>
+
+<span class="n">BiocManager</span><span class="o">::</span><span class="nf">install</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;HiContactsData&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;HiContacts&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;GenomicRanges&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;InteractionSet&quot;</span>
+<span class="p">),</span><span class="w"> </span><span class="n">ask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">,</span><span class="w"> </span><span class="n">update</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="nf">install.packages</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;ggplot2&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;dplyr&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;purrr&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;cowplot&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;readr&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;scales&quot;</span>
+<span class="p">))</span>
+
+<span class="c1"># Load libraries</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">HiContactsData</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">HiContacts</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">GenomicRanges</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">InteractionSet</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">dplyr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">purrr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">cowplot</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">scales</span><span class="p">)</span>
+
+<span class="c1"># Import Hi-C datasets</span>
+<span class="n">hics</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">    </span><span class="n">G1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span>
+<span class="w">        </span><span class="nf">HiContactsData</span><span class="p">(</span><span class="s">&quot;yeast_g1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mcool&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;cool&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">resolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4000</span>
+<span class="w">    </span><span class="p">),</span>
+<span class="w">    </span><span class="n">G2M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">import</span><span class="p">(</span>
+<span class="w">        </span><span class="nf">HiContactsData</span><span class="p">(</span><span class="s">&quot;yeast_g2m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;mcool&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">format</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;cool&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">resolution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">4000</span>
+<span class="w">    </span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Plot whole genome contact matrices</span>
+<span class="n">plots</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">imap</span><span class="p">(</span><span class="n">hics</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">hic_data</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">plotMatrix</span><span class="p">(</span>
+<span class="w">        </span><span class="n">hic_data</span><span class="p">,</span>
+<span class="w">        </span><span class="n">use.scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;balanced&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">limits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">-4</span><span class="p">,</span><span class="w"> </span><span class="m">-1</span><span class="p">),</span>
+<span class="w">        </span><span class="n">caption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="nf">ggtitle</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Yeast Hi-C Contact Map:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">))</span>
+<span class="p">})</span>
+
+<span class="nf">pdf</span><span class="p">(</span><span class="s">&quot;yeast_interchromosomal_contact_map.pdf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">5</span><span class="p">)</span>
+<span class="n">cowplot</span><span class="o">::</span><span class="nf">plot_grid</span><span class="p">(</span><span class="n">plotlist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">plots</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="nf">dev.off</span><span class="p">()</span>
+
+<span class="c1"># Calculate cis/trans ratios</span>
+<span class="n">ratios</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">imap_dfr</span><span class="p">(</span><span class="n">hics</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">hic_data</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">cisTransRatio</span><span class="p">(</span><span class="n">hic_data</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">mutate</span><span class="p">(</span><span class="n">sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="n">ratio_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">ggplot</span><span class="p">(</span><span class="n">ratios</span><span class="p">,</span>
+<span class="w">                     </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">chr</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">trans_pct</span><span class="p">,</span><span class="w"> </span><span class="n">fill</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sample</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="nf">geom_col</span><span class="p">(</span><span class="n">position</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;dodge&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="nf">labs</span><span class="p">(</span>
+<span class="w">        </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Trans Interaction Percentage by Chromosome&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Chromosome&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Trans Interaction (%)&quot;</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="nf">scale_y_continuous</span><span class="p">(</span><span class="n">labels</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">percent</span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="nf">theme_bw</span><span class="p">()</span>
+
+<span class="nf">ggsave</span><span class="p">(</span><span class="s">&quot;cis_trans_ratio_plot.pdf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ratio_plot</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">6</span><span class="p">)</span>
+
+<span class="c1"># Load centromeres</span>
+<span class="nf">data</span><span class="p">(</span><span class="n">centros_yeast</span><span class="p">)</span>
+
+<span class="c1"># Generate centromere pairs</span>
+<span class="n">centros_pairs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">lapply</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="nf">length</span><span class="p">(</span><span class="n">centros_yeast</span><span class="p">),</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">lapply</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="nf">length</span><span class="p">(</span><span class="n">centros_yeast</span><span class="p">),</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">S4Vectors</span><span class="o">::</span><span class="nf">Pairs</span><span class="p">(</span><span class="n">centros_yeast</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">centros_yeast</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="p">})</span>
+
+<span class="n">centros_pairs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">centros_pairs</span><span class="p">)</span>
+<span class="n">centros_pairs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">do.call</span><span class="p">(</span><span class="n">c</span><span class="p">,</span><span class="w"> </span><span class="n">centros_pairs</span><span class="p">)</span>
+
+<span class="n">centros_pairs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">makeGInteractionsFromGRangesPairs</span><span class="p">(</span><span class="n">centros_pairs</span><span class="p">)</span>
+
+<span class="n">centros_pairs</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">centros_pairs</span><span class="p">[</span>
+<span class="w">    </span><span class="nf">anchors</span><span class="p">(</span><span class="n">centros_pairs</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;first&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span>
+<span class="w">    </span><span class="nf">anchors</span><span class="p">(</span><span class="n">centros_pairs</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;second&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+
+<span class="c1"># Aggregate centromere interactions</span>
+<span class="n">aggr_maps</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">imap</span><span class="p">(</span><span class="n">hics</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">hic_data</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">aggr</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">aggregate</span><span class="p">(</span><span class="n">hic_data</span><span class="p">,</span><span class="w"> </span><span class="n">centros_pairs</span><span class="p">,</span><span class="w"> </span><span class="n">maxDistance</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1e9</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nf">plotMatrix</span><span class="p">(</span>
+<span class="w">        </span><span class="n">aggr</span><span class="p">,</span>
+<span class="w">        </span><span class="n">use.scores</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;balanced&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">limits</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">-5</span><span class="p">,</span><span class="w"> </span><span class="m">-1</span><span class="p">),</span>
+<span class="w">        </span><span class="n">caption</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span>
+<span class="w">    </span><span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="w">    </span><span class="nf">ggtitle</span><span class="p">(</span><span class="nf">paste</span><span class="p">(</span><span class="s">&quot;Centromere Interaction Map:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">))</span>
+<span class="p">})</span>
+
+<span class="nf">pdf</span><span class="p">(</span><span class="s">&quot;centromere_interaction_map.pdf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">10</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">5</span><span class="p">)</span>
+<span class="n">cowplot</span><span class="o">::</span><span class="nf">plot_grid</span><span class="p">(</span><span class="n">plotlist</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aggr_maps</span><span class="p">,</span><span class="w"> </span><span class="n">nrow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="nf">dev.off</span><span class="p">()</span>
+
+<span class="c1"># Distance-dependent interactions</span>
+<span class="n">pairs_files</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">list</span><span class="p">(</span>
+<span class="w">    </span><span class="n">G1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">PairsFile</span><span class="p">(</span><span class="nf">HiContactsData</span><span class="p">(</span><span class="s">&quot;yeast_g1&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pairs&quot;</span><span class="p">)),</span>
+<span class="w">    </span><span class="n">G2M</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">PairsFile</span><span class="p">(</span><span class="nf">HiContactsData</span><span class="p">(</span><span class="s">&quot;yeast_g2m&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;pairs&quot;</span><span class="p">))</span>
+<span class="p">)</span>
+
+<span class="n">ps</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">imap_dfr</span><span class="p">(</span><span class="n">pairs_files</span><span class="p">,</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">distanceLaw</span><span class="p">(</span><span class="n">pairs</span><span class="p">,</span><span class="w"> </span><span class="n">by_chr</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span>
+<span class="w">        </span><span class="nf">mutate</span><span class="p">(</span><span class="n">sample</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+<span class="p">})</span>
+
+<span class="n">ps_plot</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">plotPs</span><span class="p">(</span>
+<span class="w">    </span><span class="n">ps</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">binned_distance</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">norm_p</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sample</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="o">+</span>
+<span class="nf">scale_color_manual</span><span class="p">(</span><span class="n">values</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;black&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;red&quot;</span><span class="p">))</span><span class="w"> </span><span class="o">+</span>
+<span class="nf">ggtitle</span><span class="p">(</span><span class="s">&quot;Distance-dependent interaction probability&quot;</span><span class="p">)</span>
+
+<span class="nf">ggsave</span><span class="p">(</span><span class="s">&quot;distance_interaction_plot.pdf&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">ps_plot</span><span class="p">,</span><span class="w"> </span><span class="n">width</span><span class="o">=</span><span class="m">8</span><span class="p">,</span><span class="w"> </span><span class="n">height</span><span class="o">=</span><span class="m">6</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Analysis complete. Output PDFs generated.\n&quot;</span><span class="p">)</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+        <div class="code-section">
+            <div class="code-file-header" onclick="toggleCode('code-6')">
+                <span class="filename">HW2B/hw2b.R</span>
+                <span>
+                    <span class="lang-tag">R</span>
+                    <span class="toggle">▶ expand</span>
+                </span>
+            </div>
+            <div id="code-6" class="code-file-body collapsed">
+                <div class="highlight"><pre><span></span><span class="o">---</span>
+<span class="w">  </span><span class="n">title</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Homework 2B&quot;</span>
+<span class="n">author</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;Sage Clokey&quot;</span>
+<span class="n">date</span><span class="o">:</span><span class="w"> </span><span class="s">&quot;3/2/2026&quot;</span>
+<span class="n">output</span><span class="o">:</span>
+<span class="w">  </span><span class="n">html_document</span><span class="o">:</span>
+<span class="w">  </span><span class="n">df_print</span><span class="o">:</span><span class="w"> </span><span class="n">paged</span>
+<span class="n">pdf_document</span><span class="o">:</span>
+<span class="w">  </span><span class="n">number_sections</span><span class="o">:</span><span class="w"> </span><span class="n">true</span>
+<span class="o">---</span>
+<span class="w">  </span>
+<span class="c1"># ============================================================</span>
+<span class="c1"># HW2B - NBA Salary Prediction: Lasso and Ridge Regression</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># ---- Setup: Code copied from HW2A Problems 1c, 1d, 2, and 4a ----</span>
+
+<span class="c1"># Load the dataset</span>
+<span class="n">nba</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;NBA.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># HW2A Problem 1c: Create dataframe excluding all rows with missing data</span>
+<span class="n">nba_omit</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">na.omit</span><span class="p">(</span><span class="n">nba</span><span class="p">)</span>
+
+<span class="c1"># HW2A Problem 1d: Create nba_imputed, replacing NAs with column means</span>
+<span class="n">nba_imputed</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">nba</span>
+<span class="nf">for </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="m">9</span><span class="o">:</span><span class="nf">ncol</span><span class="p">(</span><span class="n">nba_imputed</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="n">missing_rows</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">is.na</span><span class="p">(</span><span class="n">nba_imputed</span><span class="p">[,</span><span class="w"> </span><span class="n">i</span><span class="p">])</span>
+<span class="w">  </span><span class="n">nba_imputed</span><span class="p">[</span><span class="n">missing_rows</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">]</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">nba_imputed</span><span class="p">[,</span><span class="w"> </span><span class="n">i</span><span class="p">],</span><span class="w"> </span><span class="n">na.rm</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># HW2A Problem 2: Convert categorical variables to factors</span>
+<span class="n">nba_imputed</span><span class="o">$</span><span class="n">NBA_Country</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">nba_imputed</span><span class="o">$</span><span class="n">NBA_Country</span><span class="p">)</span>
+<span class="n">nba_imputed</span><span class="o">$</span><span class="n">Tm</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.factor</span><span class="p">(</span><span class="n">nba_imputed</span><span class="o">$</span><span class="n">Tm</span><span class="p">)</span>
+
+<span class="c1"># HW2A Problem 4a: Restrict to USA players (excluding territories), drop NBA_Country</span>
+<span class="n">nba_usa</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">nba_imputed</span><span class="p">[</span><span class="n">nba_imputed</span><span class="o">$</span><span class="n">NBA_Country</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;USA&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">]</span>
+<span class="n">nba_usa</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">nba_usa</span><span class="p">[,</span><span class="w"> </span><span class="o">-</span><span class="nf">which</span><span class="p">(</span><span class="nf">names</span><span class="p">(</span><span class="n">nba_usa</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;NBA_Country&quot;</span><span class="p">)]</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># HW2B Problems</span>
+<span class="c1"># ============================================================</span>
+
+<span class="nf">library</span><span class="p">(</span><span class="n">glmnet</span><span class="p">)</span>
+
+<span class="c1"># Build design matrix and response vector for all subsequent problems</span>
+<span class="c1"># Exclude Player (column 1); log-transform Salary as response</span>
+<span class="n">X</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">model.matrix</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">Salary</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Player</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nba_usa</span><span class="p">)[,</span><span class="w"> </span><span class="m">-1</span><span class="p">]</span>
+<span class="n">y</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">nba_usa</span><span class="o">$</span><span class="n">Salary</span><span class="p">)</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 1: Lasso Regression</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 1a: Run lasso of log(Salary) on all variables except Player name;</span>
+<span class="c1">#     plot the regularization path</span>
+<span class="n">lasso_model</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">glmnet</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">lasso_model</span><span class="p">,</span><span class="w"> </span><span class="n">xvar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span>
+<span class="nf">title</span><span class="p">(</span><span class="s">&quot;Problem 1a: Lasso Regularization Path&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1b: As we move left to right (increasing lambda), estimated coefficients shrink</span>
+<span class="c1">#     toward zero; lasso performs variable selection by setting some to exactly zero.</span>
+<span class="c1">#     At the leftmost point (lambda near 0) coefficients resemble OLS;</span>
+<span class="c1">#     at the rightmost (large lambda) most are zero. The magnitudes can differ</span>
+<span class="c1">#     substantially between the two extremes, reflecting how strongly regularization</span>
+<span class="c1">#     shrinks the estimates.</span>
+
+<span class="c1"># 1c: Higher lambda =&gt; greater regularization =&gt; higher bias, lower variance.</span>
+<span class="c1">#     Lower lambda =&gt; less regularization =&gt; lower bias, higher variance.</span>
+<span class="c1">#     The optimal lambda balances these two forces.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 2: 5-Fold Cross-Validation for Lasso</span>
+<span class="c1"># ============================================================</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
+<span class="n">cv_lasso</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cv.glmnet</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">nfolds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">cv_lasso</span><span class="p">)</span>
+<span class="nf">title</span><span class="p">(</span><span class="s">&quot;Problem 2: Lasso 5-Fold CV Error vs. Lambda&quot;</span><span class="p">)</span>
+
+<span class="c1"># The CV error is high for large lambda (too much bias from over-regularization)</span>
+<span class="c1"># and also rises for very small lambda (too much variance from near-OLS fit).</span>
+<span class="c1"># The U-shape reflects the bias-variance trade-off: the minimum identifies the</span>
+<span class="c1"># lambda that best balances the two.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 3: Extract Lasso Coefficients at Best Lambda</span>
+<span class="c1"># ============================================================</span>
+
+<span class="n">lasso_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">cv_lasso</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda.min&quot;</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n--- Problem 3: Nonzero Lasso Coefficients at lambda.min ---\n&quot;</span><span class="p">)</span>
+<span class="n">nonzero_mask</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.vector</span><span class="p">(</span><span class="n">lasso_coef</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="m">0</span>
+<span class="n">nonzero_names</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">rownames</span><span class="p">(</span><span class="n">lasso_coef</span><span class="p">)[</span><span class="n">nonzero_mask</span><span class="p">]</span>
+<span class="n">nonzero_vals</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.vector</span><span class="p">(</span><span class="n">lasso_coef</span><span class="p">)[</span><span class="n">nonzero_mask</span><span class="p">]</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">data.frame</span><span class="p">(</span><span class="n">Variable</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonzero_names</span><span class="p">,</span><span class="w"> </span><span class="n">Coefficient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonzero_vals</span><span class="p">))</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\nCoefficients for key fan stats (TRB, AST, STL, BLK, BPM):\n&quot;</span><span class="p">)</span>
+<span class="nf">for </span><span class="p">(</span><span class="n">stat</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;TRB.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AST.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;STL.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BLK.&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;BPM&quot;</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;  %-6s : %f\n&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">stat</span><span class="p">,</span><span class="w"> </span><span class="n">lasso_coef</span><span class="p">[</span><span class="n">stat</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">]))</span>
+<span class="p">}</span>
+<span class="c1"># If these coefficients are zero or near-zero, lasso suggests they are not</span>
+<span class="c1"># important determinants of salary once other variables are controlled for.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 4: Percentage Change in Salary per Unit Increase in Draft Number</span>
+<span class="c1"># ============================================================</span>
+
+<span class="n">draft_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lasso_coef</span><span class="p">[</span><span class="s">&quot;NBA_DraftNumber&quot;</span><span class="p">,</span><span class="w"> </span><span class="m">1</span><span class="p">]</span>
+<span class="n">pct_change</span><span class="w">  </span><span class="o">&lt;-</span><span class="w"> </span><span class="p">(</span><span class="nf">exp</span><span class="p">(</span><span class="n">draft_coef</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">1</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="m">100</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n--- Problem 4: Draft Number Coefficient ---\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Lasso coefficient for NBA_DraftNumber:&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">draft_coef</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Percentage change in salary per 1-unit increase in draft number:&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">round</span><span class="p">(</span><span class="n">pct_change</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;%\n&quot;</span><span class="p">)</span>
+<span class="c1"># A one-pick increase in draft number (worse draft position) is associated with</span>
+<span class="c1"># a pct_change% change in salary. Since higher draft numbers = worse picks,</span>
+<span class="c1"># a negative coefficient indicates lower-drafted players earn less, which is</span>
+<span class="c1"># unsurprising given draft status correlates with perceived talent.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 5: Ridge Regression (5-Fold CV)</span>
+<span class="c1"># ============================================================</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
+<span class="n">cv_ridge</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cv.glmnet</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="n">nfolds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+<span class="nf">plot</span><span class="p">(</span><span class="n">cv_ridge</span><span class="p">)</span>
+<span class="nf">title</span><span class="p">(</span><span class="s">&quot;Problem 5: Ridge 5-Fold CV Error vs. Lambda&quot;</span><span class="p">)</span>
+
+<span class="n">ridge_coef</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">coef</span><span class="p">(</span><span class="n">cv_ridge</span><span class="p">,</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda.min&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n--- Problem 5: Ridge Coefficients at lambda.min ---\n&quot;</span><span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="nf">as.matrix</span><span class="p">(</span><span class="n">ridge_coef</span><span class="p">))</span>
+
+<span class="c1"># Comparison with lasso: ridge shrinks all coefficients toward zero but keeps</span>
+<span class="c1"># all nonzero, while lasso performs exact variable selection (some coefs = 0).</span>
+<span class="c1"># Ridge tends to distribute shrinkage more evenly across correlated predictors.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 6: CV OOS R² for Lasso and Ridge</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># OOS R² = 1 - CV_MSE / Var(y)</span>
+<span class="c1"># cv.glmnet&#39;s cvm reports mean squared error across CV folds</span>
+<span class="n">var_y</span><span class="w">          </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">var</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+<span class="n">lasso_oos_r2</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">cv_lasso</span><span class="o">$</span><span class="n">cvm</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">var_y</span>
+<span class="n">ridge_oos_r2</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">cv_ridge</span><span class="o">$</span><span class="n">cvm</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">var_y</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n--- Problem 6: Cross-Validation OOS R² ---\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Lasso CV OOS R²:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">lasso_oos_r2</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Ridge CV OOS R²:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">ridge_oos_r2</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="c1"># Compare these with the IS and OOS R² from OLS in HW2A.</span>
+<span class="c1"># Regularized models (lasso/ridge) typically have better OOS R² than OLS</span>
+<span class="c1"># because they reduce overfitting by shrinking coefficients.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 7: Lasso with Team Interactions</span>
+<span class="c1"># ============================================================</span>
+
+<span class="c1"># 7a: Story for interacting Tm with another regressor (e.g., USG):</span>
+<span class="c1">#     Usage rate (USG) may reward different players differently depending on</span>
+<span class="c1">#     team strategy; a high-usage player on a star-driven team might be paid</span>
+<span class="c1">#     more than the same usage rate on a rebuilding team. Interacting Tm with</span>
+<span class="c1">#     USG captures this heterogeneous relationship.</span>
+
+<span class="c1"># 7b: Build interaction design matrix: Tm x (all other regressors)</span>
+<span class="n">X_interact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">model.matrix</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">Salary</span><span class="p">)</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">Tm</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="p">(</span><span class="n">.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Player</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">Tm</span><span class="p">),</span>
+<span class="w">                           </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nba_usa</span><span class="p">)[,</span><span class="w"> </span><span class="m">-1</span><span class="p">]</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n--- Problem 7b: Interaction Model ---\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Number of covariates (with team interactions):&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">X_interact</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Number of observations:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">X_interact</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;OLS possible?&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nf">ifelse</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">X_interact</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nf">ncol</span><span class="p">(</span><span class="n">X_interact</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Yes&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;No — too many covariates&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="c1"># With more covariates than observations, OLS is infeasible (underdetermined system).</span>
+<span class="c1"># Lasso can still handle this by performing variable selection.</span>
+
+<span class="nf">set.seed</span><span class="p">(</span><span class="m">0</span><span class="p">)</span>
+<span class="n">cv_lasso_interact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">cv.glmnet</span><span class="p">(</span><span class="n">X_interact</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="p">,</span><span class="w"> </span><span class="n">alpha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">1</span><span class="p">,</span><span class="w"> </span><span class="n">nfolds</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">5</span><span class="p">)</span>
+
+<span class="c1"># 7c: OOS R² for interaction lasso</span>
+<span class="n">lasso_interact_r2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="m">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nf">min</span><span class="p">(</span><span class="n">cv_lasso_interact</span><span class="o">$</span><span class="n">cvm</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">var_y</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n--- Problem 7c: CV OOS R² with Interactions ---\n&quot;</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Lasso (with team interactions) CV OOS R²:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">lasso_interact_r2</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="c1"># Compare with Problem 6: adding interactions may improve OOS R² if team context</span>
+<span class="c1"># genuinely moderates the relationship between player stats and salary.</span>
+
+<span class="c1"># ============================================================</span>
+<span class="c1"># Problem 8: Forecast LeBron James&#39;s Salary</span>
+<span class="c1"># ============================================================</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot;\n--- Problem 8: LeBron James Salary Forecast ---\n&quot;</span><span class="p">)</span>
+<span class="n">lebron_idx</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">which</span><span class="p">(</span><span class="n">nba_usa</span><span class="o">$</span><span class="n">Player</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s">&quot;LeBron James&quot;</span><span class="p">)</span>
+
+<span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">lebron_idx</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1"># LeBron is in the training data, so we can index directly into X_interact</span>
+<span class="w">  </span><span class="n">lebron_X_interact</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">X_interact</span><span class="p">[</span><span class="n">lebron_idx</span><span class="p">,</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">drop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">]</span>
+<span class="w">  </span><span class="n">lebron_pred_log</span><span class="w">   </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="nf">predict</span><span class="p">(</span><span class="n">cv_lasso_interact</span><span class="p">,</span>
+<span class="w">                                          </span><span class="n">newx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">lebron_X_interact</span><span class="p">,</span>
+<span class="w">                                          </span><span class="n">s</span><span class="w">    </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;lambda.min&quot;</span><span class="p">))</span>
+<span class="w">  </span><span class="n">lebron_actual_log</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">nba_usa</span><span class="o">$</span><span class="n">Salary</span><span class="p">[</span><span class="n">lebron_idx</span><span class="p">])</span>
+
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;LeBron James actual log salary:   &quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">lebron_actual_log</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;LeBron James predicted log salary:&quot;</span><span class="p">,</span><span class="w"> </span><span class="nf">round</span><span class="p">(</span><span class="n">lebron_pred_log</span><span class="p">,</span><span class="w">   </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Difference (actual - predicted):  &quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nf">round</span><span class="p">(</span><span class="n">lebron_actual_log</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lebron_pred_log</span><span class="p">,</span><span class="w"> </span><span class="m">4</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+
+<span class="w">  </span><span class="nf">if </span><span class="p">(</span><span class="n">lebron_actual_log</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">lebron_pred_log</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Conclusion: LeBron James appears OVERPAID relative to model predictions.\n&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="n">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;Conclusion: LeBron James appears UNDERPAID relative to model predictions.\n&quot;</span><span class="p">)</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span><span class="w"> </span><span class="n">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nf">cat</span><span class="p">(</span><span class="s">&quot;LeBron James not found in the USA dataset.\n&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+function toggleCode(id) {
+    var el = document.getElementById(id);
+    var toggle = el.previousElementSibling.querySelector('.toggle');
+    if (el.classList.contains('collapsed')) {
+        el.classList.remove('collapsed');
+        toggle.textContent = '▼ collapse';
+    } else {
+        el.classList.add('collapsed');
+        toggle.textContent = '▶ expand';
+    }
+}
+</script>
+</body>
+</html>
